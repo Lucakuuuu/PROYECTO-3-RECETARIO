@@ -5,6 +5,53 @@
 #include "TDAs/list.h"
 #include "TDAs/map.h"
 
+// PARA ELIMINAR GITs INGRESAR CÓDIGO EN Shell: " git reset --hard HEAD~1 "
+
+void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
+{
+  FILE *archivo = fopen("beta - Hoja 1 (3).csv", "r"); // Abrimos el archivo en modo lectura
+
+  if (archivo == NULL){ // Si no se pudo abrir el archivo
+      perror("Error al abrir el archivo"); // Informa si el archivo no puede abrirse
+      return; // Retorna de la función
+  }
+
+  char **campos;
+  campos = leer_linea_csv(archivo, ','); // Lee los encabezados del CSV
+
+  while ((campos = leer_linea_csv(archivo, ',')) != NULL) 
+  { // Lee cada línea del archivo CSV hasta el final
+    receta *receta_nueva = (receta*)malloc(sizeof(receta));
+    // borrarComillas(campos[1]);
+    strcpy(receta_nueva->nombre_receta, campos[0]);
+    // Leer los ingredientes
+    //receta_nueva->lista_ingredientes = list_create();
+    //List* aux = list_create();
+    strcpy(receta_nueva->tipo_de_plato, campos[2]);
+    strcpy(receta_nueva->preparacion, campos[4]);
+
+    // Aquí solo se está insertando en el mapa recetas_ordenadas
+    map_insert(recetas_ordenadas, receta_nueva->nombre_receta, receta_nueva);
+
+  }
+
+  fclose(archivo); // Cierra el archivo después de leer todas las líneas
+
+}
+
+void mostrar_todas_las_recetas(Map *recetas_ordenadas){
+MapPair *pair = map_first(recetas_ordenadas); // Obtenemos el primer par del mapa con todas las recetas
+printf("\n"); // Imprimimos un salto de línea
+int contador = 0; // Contador para saber el número de recetas
+while (pair != NULL) 
+{ // Mientras el par no sea nulo
+    receta *receta_actual = pair->value; // Tomamos la receta guardada en el valor del par actual
+    contador++; // Aumentamos el contador
+    imprimir(receta_actual, contador); // Imprimimos los datos de la receta
+    pair = map_next(recetas_ordenadas); // Avanza al siguiente par en el mapa
+}
+}
+
 void menu_secundario()
 {
   printf("\nMostrar recectas según:\n");
