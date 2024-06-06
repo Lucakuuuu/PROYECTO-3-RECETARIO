@@ -7,6 +7,45 @@
 
 // PARA ELIMINAR GITs INGRESAR CÓDIGO EN Shell: " git reset --hard HEAD~1 "
 
+typedef struct receta{
+  char nombre_receta[30]; 
+  List *lista_ingredientes; // Lista de ingredientes
+  char tipo_de_plato[15]; //acompañamiento, postre, plato principal, etc
+  List *lista_dietas; //si es vegana, vegetariana, omnivora, etc.
+  char preparacion[2000]; //pasos a seguir para preparar la receta
+} receta;
+
+
+void borrarComillas(char *str) { 
+  int len = strlen(str); //Obtenemos la longitud de la cadena
+  if (str[0] == '"') { //SI el primer carácter es una comilla:
+      memmove(str, str + 1, len); //Movemos el inicio de la cadena a un espacio a la derecha
+      len--; //Bajamos en 1 el tamaño de la cadena
+  }
+  if (len > 0 && str[len - 1] == '"') { //Si el último carácter es una comilla
+      str[len - 1] = '\0'; //Lo cambiamos al carácter nulo para que ahí termine la cadena.
+  }
+}
+
+int is_equal_str(void *key1, void *key2) {
+  return strcmp((char *)key1, (char *)key2) == 0;
+}
+
+int is_equal_int(void *key1, void *key2) {return *(int *)key1 == *(int *)key2; }
+
+char *espacioInicial(char *str) {
+    while (isspace((unsigned char)*str)) str++; //Mientras el primer carácter es un espacio, avanzamos el puntero del inicio de la cadena
+      return str; //Retornamos la cadena cambiada
+
+}
+
+void imprimir(receta *receta, int contador){ //Función para imprimir los datos de la película
+  printf("%d. Receta: %s\n", contador, receta->nombre_receta); 
+  printf("Tipo de plato: %s\n", receta->tipo_de_plato);
+  printf("Preparacion: %s\n", receta->preparacion);
+  printf("\n");
+}
+
 void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
 {
   FILE *archivo = fopen("beta - Hoja 1 (3).csv", "r"); // Abrimos el archivo en modo lectura
