@@ -29,6 +29,65 @@ char *espacioInicial(char *cadena) {
   }
   strcpy(cadenaCopia, cadena);
   return cadenaCopia;
+<<<<<<< HEAD
+=======
+}
+
+// Función para recortar espacios en blanco al inicio y final de una cadena
+char *trim(char *cadena) {
+  // Punteros para el inicio y final de la cadena recortada
+  char *inicio, *fin;
+
+  // Elimina espacios en blanco al inicio de la cadena
+  inicio = cadena;
+  while (*inicio == ' ') {
+    inicio++;
+  }
+
+  // Si la cadena está vacía después de eliminar espacios al inicio, retorna la cadena vacía
+  if (*inicio == '\0') {
+    return "";
+  }
+
+  // Elimina espacios en blanco al final de la cadena
+  fin = inicio + strlen(inicio) - 1;
+  while (*fin == ' ') {
+    fin--;
+  }
+
+  *(fin + 1) = '\0'; // Agrega un terminador de cadena al final recortado
+
+  // Retorna la cadena recortada
+  return inicio;
+}
+
+// Función para copiar los elementos de una lista a otra lista
+void copiarLista(List *listaCopia, List *listaOriginal) {
+  if (listaOriginal == NULL) {
+    printf("La lista original está vacía.\n");
+    return;
+  }
+  List *actual = list_first(listaCopia);
+  while (actual != NULL) {
+    list_pushBack(listaOriginal, actual);
+    actual = list_next(listaCopia);
+  }
+}
+
+void mostrarLista(List *lista) {
+  if (lista == NULL) {
+    printf("La lista está vacía.\n");
+    return;
+  }
+  List *actual = list_first(lista);
+  printf("%s", (char *)actual);
+  actual = list_next(lista);
+  while (actual != NULL) {
+    printf(", %s", (char *)actual);
+    actual = list_next(lista);
+  }
+  printf("\n");
+>>>>>>> 3403473afece02b4bed39a1d81488509ab187f72
 }
 
 // Función para recortar espacios en blanco al inicio y final de una cadena
@@ -91,8 +150,15 @@ void mostrarLista(List *lista) {
 void imprimir(receta *receta, int contador){
   printf("%d. Receta: %s\n", contador, receta->nombre_receta); 
   printf("Tipo de plato: %s\n", receta->tipo_de_plato);
+<<<<<<< HEAD
   printf("Ingredientes: "); mostrarLista(receta->lista_ingredientes);
   printf("Dietas: "); mostrarLista(receta->lista_dietas);
+=======
+  printf("Ingredientes: "); 
+  mostrarLista(receta->lista_ingredientes);
+  printf("Dietas: "); 
+  mostrarLista(receta->lista_dietas);
+>>>>>>> 3403473afece02b4bed39a1d81488509ab187f72
   printf("Preparacion: %s\n", receta->preparacion);
   printf("\n");
 }
@@ -112,9 +178,15 @@ void arreglar_cadena(char *cadena){
   cadena = trim(cadena);
 }
 
+<<<<<<< HEAD
 void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta){
   FILE *archivo = fopen("Ingredientes/Ingredientes.csv", "r"); // Abrimos el archivo en modo lectura
 
+=======
+void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
+{
+  FILE *archivo = fopen("Ingredientes/beta - Hoja 1 (3).csv", "r"); // Abrimos el archivo en modo lectura
+>>>>>>> 3403473afece02b4bed39a1d81488509ab187f72
   if (archivo == NULL){ // Si no se pudo abrir el archivo
       perror("Error al abrir el archivo"); // Informa si el archivo no puede abrirse
       return; // Retorna de la función
@@ -129,6 +201,7 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
     receta *receta_nueva = (receta*)malloc(sizeof(receta));
     strcpy(receta_nueva->nombre_receta, campos[0]);
     receta_nueva->lista_ingredientes = list_create(); // Lista para los ingredientes
+<<<<<<< HEAD
 
     // Separación de ingredientes individuales dentro de las comillas
     if (strcmp(campos[1], "") != 0) { // Verifica si el campo de ingredientes no está vacío
@@ -138,6 +211,17 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
         arreglar_cadena(ingredienteActual); // Arregla la cadena para eliminar las comillas dobles)
         list_pushBack(aux, espacioInicial(ingredienteActual)); // Agrega los ingredientes a la lista de ingredientes
 
+=======
+    
+    // Separación de ingredientes individuales dentro de las comillas
+    if (strcmp(campos[1], "") != 0) { // Verifica si el campo de ingredientes no está vacío
+      char *ingredienteActual = strtok(campos[1], ","); // Obtiene el primer género
+
+      while (ingredienteActual != NULL) {
+        arreglar_cadena(ingredienteActual); // Arregla la cadena para eliminar las comillas dobles)
+        list_pushBack(aux, espacioInicial(ingredienteActual)); // Agrega los ingredientes a la lista de ingredientes
+        
+>>>>>>> 3403473afece02b4bed39a1d81488509ab187f72
         /*
         MapPair *estaingrediente = map_search(mapaingredientes, espacioInicial(ingredienteActual));
         // si no está el género
@@ -180,7 +264,10 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
         } else {
           PelisXingrediente *Gpair = estaingrediente->value;
           list_pushBack(Gpair->Peliculas, peli);
+<<<<<<< HEAD
           a
+=======
+>>>>>>> 3403473afece02b4bed39a1d81488509ab187f72
         }
         */
 
