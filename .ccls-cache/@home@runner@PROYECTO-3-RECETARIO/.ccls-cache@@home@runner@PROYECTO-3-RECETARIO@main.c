@@ -67,8 +67,6 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
     // Leer los ingredientes
     receta_nueva->lista_ingredientes = list_create();
 
-
-    
     // Separación de géneros individuales dentro de las comillas
     if (strcmp(campos[1], "") != 0) { // Verifica si el campo de géneros no está vacío
       char *generoActual = strtok(campos[1], ","); // Obtiene el primer género
@@ -87,7 +85,7 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
         // Elimina espacios en blanco al inicio y final del género
         generoActual = trim(generoActual);
 
-        // Agrega los ingredientes a la lista de géneros de la película
+        // Agrega el género a la lista de géneros de la película
         list_pushBack(Aux1, espacioInicial(generoActual));
         MapPair *estaGenero = map_search(mapaGeneros, espacioInicial(generoActual));
         // si no está el género
@@ -107,10 +105,6 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
       copiarLista(Aux1, receta_nueva->lista_ingredientes);
       list_clean(Aux1);
     }
-
-
-
-
     
     strcpy(receta_nueva->tipo_de_plato, campos[2]);
     strcpy(receta_nueva->preparacion, campos[4]);
@@ -187,7 +181,7 @@ void mostrarMenuPrincipal()
   puts("                Recetario               ");
   puts("========================================");
 
-  puts("1) Mostrar recetas"); 
+  puts("1) Mostrar recetas"); //esto lleva a un mini menú donde se pregunta por el tipo de dieta y la categoria de receta que se busca
   puts("2) Buscar por ingredientes");
   puts("3) Buscar recetas posibles");
   puts("4) Salir\n");

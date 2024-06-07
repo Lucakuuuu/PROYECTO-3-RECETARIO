@@ -57,6 +57,7 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
 
   char **campos;
   campos = leer_linea_csv(archivo, ','); // Lee los encabezados del CSV
+  List *Aux1 = list_create();
 
   while ((campos = leer_linea_csv(archivo, ',')) != NULL) 
   { // Lee cada línea del archivo CSV hasta el final
@@ -64,8 +65,53 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
     // borrarComillas(campos[1]);
     strcpy(receta_nueva->nombre_receta, campos[0]);
     // Leer los ingredientes
-    //receta_nueva->lista_ingredientes = list_create();
-    //List* aux = list_create();
+    receta_nueva->lista_ingredientes = list_create();
+
+
+    
+    // Separación de géneros individuales dentro de las comillas
+    if (strcmp(campos[1], "") != 0) { // Verifica si el campo de géneros no está vacío
+      char *generoActual = strtok(campos[1], ","); // Obtiene el primer género
+
+      while (generoActual != NULL) {
+        // Elimina las comillas dobles si están presentes (")")
+        if (generoActual[0] == '"') {
+          memmove(generoActual, generoActual + 1, strlen(generoActual));
+          generoActual[strlen(generoActual) - 1] = '\0';
+        }
+        // Elimina las comillas simples si están presentes (')")
+        if (generoActual[0] == '\'') {
+          memmove(generoActual, generoActual + 1, strlen(generoActual));
+          generoActual[strlen(generoActual) - 1] = '\0';
+        }
+        // Elimina espacios en blanco al inicio y final del género
+        generoActual = trim(generoActual);
+
+        // Agrega los ingredientes a la lista de géneros de la película
+        list_pushBack(Aux1, espacioInicial(generoActual));
+        MapPair *estaGenero = map_search(mapaGeneros, espacioInicial(generoActual));
+        // si no está el género
+        if (estaGenero == NULL) {
+          PelisXGenero *genero = (PelisXGenero *)malloc(sizeof(PelisXGenero));
+          genero->Peliculas = list_create();
+          map_insert(mapaGeneros, espacioInicial(generoActual), genero);
+          list_pushBack(genero->Peliculas, peli);
+        } else {
+          PelisXGenero *Gpair = estaGenero->value;
+          list_pushBack(Gpair->Peliculas, peli);
+        }
+
+        // Obtiene el siguiente género
+        generoActual = strtok(NULL, ",");
+      }
+      copiarLista(Aux1, receta_nueva->lista_ingredientes);
+      list_clean(Aux1);
+    }
+
+
+
+
+    
     strcpy(receta_nueva->tipo_de_plato, campos[2]);
     strcpy(receta_nueva->preparacion, campos[4]);
 
@@ -141,7 +187,7 @@ void mostrarMenuPrincipal()
   puts("                Recetario               ");
   puts("========================================");
 
-  puts("1) Mostrar recetas"); //esto lleva a un mini menú donde se pregunta por el tipo de dieta y la categoria de receta que se busca
+  puts("1) Mostrar recetas"); 
   puts("2) Buscar por ingredientes");
   puts("3) Buscar recetas posibles");
   puts("4) Salir\n");
