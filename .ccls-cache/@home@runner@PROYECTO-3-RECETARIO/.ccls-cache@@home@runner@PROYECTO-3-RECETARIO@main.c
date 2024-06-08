@@ -180,7 +180,6 @@
             } else {
               PelisXingrediente *Gpair = estaingrediente->value;
               list_pushBack(Gpair->Peliculas, peli);
-              a
             }
             */
 
