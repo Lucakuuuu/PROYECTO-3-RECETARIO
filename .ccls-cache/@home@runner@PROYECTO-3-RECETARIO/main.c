@@ -306,6 +306,17 @@ void mostrarMenuPrincipal() {
     puts("4) Salir\n");
 }
 
+void menu_ingredientes()
+{
+  printf("Cuantos ingredientes quiere en la receta:\n");
+  printf("-----------------------\n\n");
+  printf("1. Por un ingrediente\n");
+  printf("2. Por dos ingredientes\n");
+  printf("3. Por tres ingredientes\n");
+  printf("4. Por cuatro ingredientes\n");
+  printf("5. Por cinco ingredientes\n");
+}
+
 void buscar_por_ingredientes(Map *mapa_ingredientes)
 {
   limpiarPantalla();
