@@ -177,6 +177,60 @@ void rellenar_mapa_de_ingredientes(Map *mapa_ingredientes, receta *receta) {
   }
 }
 
+void buscar_por_plato(Map *mapa_platos)
+{
+    printf("Platos disponibles:\n\n");
+    MapPair *pair = map_first(mapa_platos);
+    unsigned short contador = 1;
+    while (pair != NULL) 
+    {
+        
+        printf("%hu) %s\n", contador, (char *)pair->key); contador++;
+        pair = map_next(mapa_platos);
+    } 
+    printf("\n");
+
+    char opcion_plato[20];
+    contador = 1;
+    printf("RECUERDA: primera letra en mayuscula\n");
+    printf("Ingrese el tipo de plato deseado: \n");
+    getchar();
+    scanf("%19[^\n]", opcion_plato); // Lee la dieta
+    MapPair *plato = map_search(mapa_platos, opcion_plato);
+    if(plato == NULL)
+    {
+        printf("No se encontraron recetas para el tipo de plato ingresado\n");
+        return;
+    }
+    List *recetas = plato->value;
+ //   printf("\nRecetas disponibles para el plato %s:\n\n", opcion_plato);
+    
+    receta *actual = list_first(recetas);
+    while (actual != NULL)
+    {
+        imprimir(actual, contador);
+        contador++;
+        actual = list_next(recetas);
+    }
+    
+}
+
+void rellenar_tipo(Map *mapa_tipo, receta *receta)
+{
+    MapPair *par = map_search(mapa_tipo, receta->tipo_de_plato);
+    if (par == NULL)
+    {
+        List *lista_recetas = list_create();
+        list_pushBack(lista_recetas, receta);
+        map_insert(mapa_tipo, receta->tipo_de_plato, lista_recetas);    
+    }
+    else
+    {
+        List *lista_recetas = par->value;
+        list_pushBack(lista_recetas, receta);  
+    }
+}
+
 void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta, Map *mapa_ingredientes) {
     FILE *archivo = fopen("Ingredientes/Ingredientes.csv", "r");
 
@@ -231,6 +285,7 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta,
         }
         strcpy(receta_nueva->preparacion, campos[4]);
         map_insert(recetas_ordenadas, receta_nueva->nombre_receta, receta_nueva);
+        rellenar_tipo(tipo_de_plato, receta_nueva);
         rellenar_mapa_de_ingredientes(mapa_ingredientes, receta_nueva);
     }
     fclose(archivo);
@@ -290,7 +345,7 @@ void buscarDieta(Map *tipo_dieta) {
         printf("No se encontraron recetas %s\n", opcionDieta);
 }
 
-void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta) {
+void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato) {
     char opcion;
     do {
         limpiarPantalla();
@@ -299,7 +354,7 @@ void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta) {
         scanf(" %c", &opcion);
         switch (opcion) {
         case '1':
-            // buscarPlato();
+            buscar_por_plato(tipo_de_plato);
             break;
         case '2':
             buscarDieta(tipo_dieta);
@@ -417,7 +472,8 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
       }
       aux = list_next(lista_recetas);
     }
-  map_clean(mapa_ingredientes);
+    if(contador == 1) printf("No se encontraron recetas con esos ingredientes\n");
+    map_clean(mapa_ingredientes);
 }
 
 int main() {
@@ -434,7 +490,7 @@ int main() {
         scanf(" %c", &opcion);
         switch (opcion) {
         case '1':
-            mostrar_recetas(recetas_ordenadas, tipo_dieta);
+            mostrar_recetas(recetas_ordenadas, tipo_dieta, tipo_de_plato);
             break;
         case '2':
             buscar_por_ingredientes(mapa_ingredientes);
@@ -450,5 +506,8 @@ int main() {
         }
         presioneTeclaParaContinuar();
     } while (opcion != '4');
+    map_clean(mapa_ingredientes);
+    map_clean(tipo_dieta);
+    map_clean(tipo_de_plato);
     return 0;
 }
