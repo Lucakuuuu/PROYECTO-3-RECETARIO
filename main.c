@@ -15,7 +15,8 @@ typedef struct{
   char preparacion[2000]; //pasos a seguir para preparar la receta
 } receta;
 
-typedef struct{
+typedef struct
+{
   char dieta[50];
   List *recetas;
 } recetasxdieta;
@@ -155,7 +156,28 @@ void imprimir(receta *receta, int contador) {
     printf("\n");
 }
 
-void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta) {
+void rellenar_mapa_de_ingredientes(Map *mapa_ingredientes, receta *receta) {
+  List *lista_ingredientes = receta->lista_ingredientes;
+  char *aux = list_first(lista_ingredientes);
+
+  while (aux != NULL) {
+    MapPair *par = map_search(mapa_ingredientes, aux);
+
+    // If the ingredient is not present in the map, create a new list
+    if (par == NULL) {
+      List *lista_recetas = list_create();
+      list_pushBack(lista_recetas, receta);
+      map_insert(mapa_ingredientes, aux, lista_recetas);
+    } else { // If the ingredient is present, add the recipe to its list
+      List *lista_recetas = par->value;
+      list_pushBack(lista_recetas, receta);
+    }
+
+    aux = list_next(lista_ingredientes);
+  }
+}
+
+void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta, Map *mapa_ingredientes) {
     FILE *archivo = fopen("Ingredientes/Ingredientes.csv", "r");
 
     if (archivo == NULL) {
@@ -209,6 +231,7 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta)
         }
         strcpy(receta_nueva->preparacion, campos[4]);
         map_insert(recetas_ordenadas, receta_nueva->nombre_receta, receta_nueva);
+        rellenar_mapa_de_ingredientes(mapa_ingredientes, receta_nueva);
     }
     fclose(archivo);
 }
@@ -402,10 +425,11 @@ int main() {
     Map *recetas_ordenadas = map_create(is_equal_str);
     Map *tipo_de_plato = map_create(is_equal_str);
     Map *tipo_dieta = map_create(is_equal_str);
+    Map *mapa_ingredientes = map_create(is_equal_str);
 
     do {
         mostrarMenuPrincipal();
-        cargar_recetas(recetas_ordenadas, tipo_de_plato, tipo_dieta);
+        cargar_recetas(recetas_ordenadas, tipo_de_plato, tipo_dieta, mapa_ingredientes);
         printf("Ingrese su opción: ");
         scanf(" %c", &opcion);
         switch (opcion) {
@@ -413,7 +437,7 @@ int main() {
             mostrar_recetas(recetas_ordenadas, tipo_dieta);
             break;
         case '2':
-            // buscarXIngredientes(recetas_ordenadas);
+            buscar_por_ingredientes(mapa_ingredientes);
             break;
         case '3':
             // buscarXRecetas(recetas_ordenadas);
