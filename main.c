@@ -212,7 +212,7 @@ void menu_secundario() {
     printf("1. Tipo de plato\n");
     printf("2. Tipo de dieta\n");
     printf("3. Todas las recetas\n");
-    printf("4. Volver al menú principal\n");
+    printf("4. Volver al menú principal\n\n");
 }
 
 void buscarDieta(Map *tipo_dieta) {
@@ -285,6 +285,53 @@ void mostrarMenuPrincipal() {
     puts("2) Buscar por ingredientes");
     puts("3) Buscar recetas posibles");
     puts("4) Salir\n");
+}
+
+void buscar_por_ingredientes(Map *mapa_ingredientes)
+{
+  limpiarPantalla();
+  menu_ingredientes();
+  int ingr = 0;
+  printf("\nIngrese una opcion valida: \n");
+  scanf("%d", &ingr);
+
+  printf("\nRECUERDE: todo en minúsculas y con tilde\n");	
+  printf("Inserte los ingredientes: \n");
+  getchar();
+
+  List *ingredientes = list_create();
+  char ingrediente_actual[20];
+  int i = 0;
+
+
+  while (i < ingr)
+  {
+      scanf("%19[^\n]", ingrediente_actual);
+      getchar();
+      aMinusculas(ingrediente_actual);
+      trim(ingrediente_actual);
+      list_pushBack(ingredientes, espacioInicial(ingrediente_actual));
+      i++;
+  }
+
+  MapPair *par = map_search(mapa_ingredientes, ingrediente_actual);
+    if(par == NULL) {
+        printf("No se encontraron recetas con esos ingredientes\n");
+        return;
+    }
+    List *lista_recetas = par->value;
+    receta *aux = list_first(lista_recetas);
+    int contador = 1;
+    while (aux != NULL) 
+    {
+      if (comparar_listas(aux->lista_ingredientes, ingredientes, ingr) == 1)
+      {
+        imprimir(aux, contador);
+        contador++;
+      }
+      aux = list_next(lista_recetas);
+    }
+  map_clean(mapa_ingredientes);
 }
 
 int main() {
