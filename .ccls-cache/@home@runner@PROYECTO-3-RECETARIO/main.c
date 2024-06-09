@@ -98,6 +98,25 @@ void arreglar_cadena(char *cadena) {
     }
 }
 
+void aMinusculas(char *cadena) {
+    // Inicializamos el puntero actual
+    char *actual = cadena;
+
+    // Mientras haya caracteres en la cadena
+    while (*actual) {
+        // Convertir a minúscula si es una letra mayúscula (excepto las tildadas)
+        if (*actual >= 'A' && *actual <= 'Z' && !((*actual >= (char)128 && *actual <= (char)165) || (*actual >= (char)192 && *actual <= (char)221))) {
+            *actual = *actual + 32;
+        }
+        if (*actual == ' '  && *actual == cadena[0]) 
+        {
+            memmove(actual, actual + 1, strlen(actual));
+        }
+
+        actual++;
+    }
+}
+
 void copiarLista(List *listaCopia, List *listaOriginal) {
     if (listaOriginal == NULL) {
         printf("La lista original está vacía.\n");
