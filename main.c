@@ -317,6 +317,39 @@ void menu_ingredientes()
   printf("5. Por cinco ingredientes\n");
 }
 
+int comparar_listas(List *lista1, List *lista2, int ingr)
+{
+  if (lista1 == NULL || lista2 == NULL)
+  {
+    printf("una de las listas está vacía.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  char *aux1 = list_first(lista1);
+  char *aux2 = list_first(lista2);
+  int count = 0;
+
+  while (aux1 != NULL)
+  {
+    while (aux2 != NULL)
+    {
+      if (strcmp(aux1, aux2) == 0)
+      {
+        count++;
+        break;
+      }
+
+      aux2 = list_next(lista2);
+    }
+    aux1 = list_next(lista1);
+    aux2 = list_first(lista2);
+  }
+
+  if (count == ingr)
+    return 1;
+  return 0;
+}
+
 void buscar_por_ingredientes(Map *mapa_ingredientes)
 {
   limpiarPantalla();
