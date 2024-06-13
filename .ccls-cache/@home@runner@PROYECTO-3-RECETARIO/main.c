@@ -7,39 +7,36 @@
 
 // PARA ELIMINAR GITs INGRESAR CÓDIGO EN Shell: " git reset --hard HEAD~1 "
 
+// Estructura para almacenar la información de una receta
 typedef struct{
-  char nombre_receta[30]; 
+  char nombre_receta[30]; // Nombre de la receta
   List *lista_ingredientes; // Lista de ingredientes
-  char tipo_de_plato[15]; //acompañamiento, postre, plato principal, etc
-  List *lista_dietas; //si es vegana, vegetariana, omnivora, etc.
-  char preparacion[2000]; //pasos a seguir para preparar la receta
+  char tipo_de_plato[15]; // Si es acompañamiento, postre, plato principal, etc
+  List *lista_dietas; // Si es vegana, vegetariana, omnivora, etc.
+  char preparacion[2000]; // Pasos a seguir para preparar la receta
 } receta;
 
-typedef struct
-{
-  char dieta[50];
+typedef struct{
+  char dieta[50]; 
   List *recetas;
 } recetasxdieta;
 
-typedef struct{
-  char plato[50];
-  List *recetas;
-} platosxdieta;
+// Función para comparar por nombre
+int is_equal_str(void *key1, void *key2) {return strcmp((char *)key1, (char *)key2) == 0;} 
 
-int is_equal_str(void *key1, void *key2) {return strcmp((char *)key1, (char *)key2) == 0;}
-
+// Función para comparar por valor
 int is_equal_int(void *key1, void *key2) {return *(int *)key1 == *(int *)key2; }
 
-// Función para reservar espacio inicial para una cadena
+// Función para quitar el espacio inicial de una cadena
 char *espacioInicial(char *cadena) {
-    int longitud = strlen(cadena);
-    char *cadenaCopia = (char *)malloc((longitud + 1) * sizeof(char));
-    if (cadenaCopia == NULL) {
-        printf("Error al asignar memoria.\n");
-        exit(1);
+    int longitud = strlen(cadena); // Obtener la longitud de la cadena
+    char *cadenaCopia = (char *)malloc((longitud + 1) * sizeof(char)); // Asignar memoria y quitar el espacio inicial
+    if (cadenaCopia == NULL) { // Si la reserva de memoria no fue exitosa
+        printf("Error al asignar memoria.\n"); 
+        exit(1); // Salir del programa con código de error
     }
-    strcpy(cadenaCopia, cadena);
-    return cadenaCopia;
+    strcpy(cadenaCopia, cadena); // Copiar la cadena original a la copia
+    return cadenaCopia; // Retornar la copia
 }
 
 // Función para recortar espacios en blanco al inicio y final de una cadena
@@ -99,6 +96,7 @@ void arreglar_cadena(char *cadena) {
     }
 }
 
+// Función para pasar una cadena a minúsculas
 void aMinusculas(char *cadena) {
     // Inicializamos el puntero actual
     char *actual = cadena;
@@ -113,11 +111,11 @@ void aMinusculas(char *cadena) {
         {
             memmove(actual, actual + 1, strlen(actual));
         }
-
         actual++;
     }
 }
 
+// Función para copiar una lista
 void copiarLista(List *listaCopia, List *listaOriginal) {
     if (listaOriginal == NULL) {
         printf("La lista original está vacía.\n");
@@ -130,6 +128,7 @@ void copiarLista(List *listaCopia, List *listaOriginal) {
     }
 }
 
+// Función para imprimir una lista
 void mostrarLista(List *lista) {
     if (lista == NULL) {
         printf("La lista está vacía.\n");
@@ -145,6 +144,7 @@ void mostrarLista(List *lista) {
     printf("\n");
 }
 
+// Función para imprimir una receta
 void imprimir(receta *receta, int contador) {
     printf("%d. Receta: %s\n", contador, receta->nombre_receta);
     printf("    Tipo de plato: %s\n", receta->tipo_de_plato);
@@ -156,6 +156,7 @@ void imprimir(receta *receta, int contador) {
     printf("\n");
 }
 
+// Función para llenar el mapa de ingredientes
 void rellenar_mapa_de_ingredientes(Map *mapa_ingredientes, receta *receta) {
   List *lista_ingredientes = receta->lista_ingredientes;
   char *aux = list_first(lista_ingredientes);
@@ -177,45 +178,55 @@ void rellenar_mapa_de_ingredientes(Map *mapa_ingredientes, receta *receta) {
   }
 }
 
+// Función para buscar por plato
 void buscar_por_plato(Map *mapa_platos)
 {
-    printf("Platos disponibles:\n\n");
-    MapPair *pair = map_first(mapa_platos);
-    unsigned short contador = 1;
-    while (pair != NULL) 
+    printf("\nPlatos disponibles:\n\n"); // Imprimir los platos disponibles
+    MapPair *pair = map_first(mapa_platos); // Obtener el primer par del mapa de platos
+    unsigned short contador = 1; // Contador para enumerar los platos
+    while (pair != NULL) // Mientras haya pares en el mapa de platos
     {
-        
-        printf("%hu) %s\n", contador, (char *)pair->key); contador++;
-        pair = map_next(mapa_platos);
+        printf("%hu) %s\n", contador, (char *)pair->key); contador++; // Imprimir el número del plato y su nombre
+        pair = map_next(mapa_platos); // Obtener el siguiente par del mapa de platos
     } 
     printf("\n");
 
     char opcion_plato[20];
     contador = 1;
     printf("RECUERDA: primera letra en mayuscula\n");
-    printf("Ingrese el tipo de plato deseado: \n");
+    printf("Ingrese el tipo de plato deseado: ");
     getchar();
     scanf("%19[^\n]", opcion_plato); // Lee la dieta
     MapPair *plato = map_search(mapa_platos, opcion_plato);
-    if(plato == NULL)
-    {
-        printf("No se encontraron recetas para el tipo de plato ingresado\n");
+    
+    if(plato == NULL){
+        printf("\nNo se encontraron recetas para el tipo de plato ingresado\n");
+        char opcion;
+        printf("¿Desea buscar recetas de otro plato? (s/n): "); getchar();
+        scanf("%c", &opcion);
+        if(opcion == 's' || opcion == 'S') buscar_por_plato(mapa_platos);
         return;
     }
+    
     List *recetas = plato->value;
- //   printf("\nRecetas disponibles para el plato %s:\n\n", opcion_plato);
+    contador = 1;
     
     receta *actual = list_first(recetas);
     while (actual != NULL)
     {
+        if(contador == 1) printf("\nRecetas disponibles para el plato deseado:\n\n");
         imprimir(actual, contador);
         contador++;
         actual = list_next(recetas);
     }
-    
+    char opcion;
+    printf("¿Desea buscar recetas de otro plato? (s/n): "); getchar();
+    scanf("%c", &opcion);
+    if(opcion == 's' || opcion == 'S') buscar_por_plato(mapa_platos);
 }
 
-void rellenar_tipo(Map *mapa_tipo, receta *receta)
+// Función para llenar el mapa de platos
+void rellenar_tipo_plato(Map *mapa_tipo, receta *receta)
 {
     MapPair *par = map_search(mapa_tipo, receta->tipo_de_plato);
     if (par == NULL)
@@ -231,6 +242,7 @@ void rellenar_tipo(Map *mapa_tipo, receta *receta)
     }
 }
 
+// Función para cargar las recetas
 void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta, Map *mapa_ingredientes) {
     FILE *archivo = fopen("Ingredientes/Ingredientes.csv", "r");
 
@@ -285,12 +297,58 @@ void cargar_recetas(Map *recetas_ordenadas, Map *tipo_de_plato, Map *tipo_dieta,
         }
         strcpy(receta_nueva->preparacion, campos[4]);
         map_insert(recetas_ordenadas, receta_nueva->nombre_receta, receta_nueva);
-        rellenar_tipo(tipo_de_plato, receta_nueva);
+        rellenar_tipo_plato(tipo_de_plato, receta_nueva);
         rellenar_mapa_de_ingredientes(mapa_ingredientes, receta_nueva);
     }
     fclose(archivo);
 }
 
+// Función para buscar por dieta
+void buscarDieta(Map *tipo_dieta) {
+    printf("\nDietas disponibles:\n\n");
+    MapPair *pair = map_first(tipo_dieta);
+    unsigned short contador = 1;
+    while (pair != NULL) {
+        recetasxdieta *dieta = (recetasxdieta *)pair->value;
+        printf("%hu) %s\n", contador, (char *)pair->key); contador++;
+        pair = map_next(tipo_dieta);
+    } 
+    printf("\n");
+
+    char opcionDieta[50];
+    contador = 1;
+
+    printf("\nIngrese la dieta deseada: ");
+    scanf("%s", opcionDieta); // Lee la dieta
+    // Itera sobre el mapa para buscar recetas de la dieta especificada
+    pair = map_search(tipo_dieta, opcionDieta);
+    if(pair == NULL){
+        printf("No se encontraron recetas para la dieta ingresada\n\n");
+        char opcion;
+        printf("¿Desea buscar recetas de otro dieta? (s/n): "); getchar();
+        scanf("%c", &opcion);
+        printf("\n");
+        if(opcion == 's' || opcion == 'S') buscarDieta(tipo_dieta);
+        return;
+    }
+    if (pair != NULL) {
+        recetasxdieta *dietaP = pair->value;
+        receta *receta_actual = list_first(dietaP->recetas);
+        while (receta_actual != NULL) {
+            if (contador == 1) 
+                printf("\nRECETAS %s:\n\n", opcionDieta);
+            imprimir(receta_actual, contador);
+            contador++;
+            receta_actual = list_next(dietaP->recetas);
+        }
+    }
+    char opcion;
+    printf("¿Desea buscar recetas de otro dieta? (s/n): "); getchar();
+    scanf("%c", &opcion);
+    if(opcion == 's' || opcion == 'S') buscarDieta(tipo_dieta);
+}
+
+// Función para mostrar todas las recetas
 void mostrar_todas_las_recetas(Map *recetas_ordenadas) {
     MapPair *pair = map_first(recetas_ordenadas);
     printf("\n");
@@ -310,39 +368,6 @@ void menu_secundario() {
     printf("2. Tipo de dieta\n");
     printf("3. Todas las recetas\n");
     printf("4. Volver al menú principal\n\n");
-}
-
-void buscarDieta(Map *tipo_dieta) {
-    printf("\nDietas disponibles:\n\n");
-    MapPair *pair = map_first(tipo_dieta);
-    unsigned short contador = 1;
-    while (pair != NULL) {
-        recetasxdieta *dieta = (recetasxdieta *)pair->value;
-        printf("%hu) %s\n", contador, (char *)pair->key); contador++;
-        pair = map_next(tipo_dieta);
-    } 
-    printf("\n");
-
-    char opcionDieta[50];
-    contador = 1;
-
-    printf("\nIngrese la dieta deseada: ");
-    scanf("%s", opcionDieta); // Lee la dieta
-    // Itera sobre el mapa para buscar recetas de la dieta especificada
-    pair = map_search(tipo_dieta, opcionDieta);
-    if (pair != NULL) {
-        recetasxdieta *dietaP = pair->value;
-        receta *receta_actual = list_first(dietaP->recetas);
-        while (receta_actual != NULL) {
-            if (contador == 1) 
-                printf("\nRECETAS %s:\n\n", opcionDieta);
-            imprimir(receta_actual, contador);
-            contador++;
-            receta_actual = list_next(dietaP->recetas);
-        }
-    }
-    if (contador == 1) 
-        printf("No se encontraron recetas %s\n", opcionDieta);
 }
 
 void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato) {
@@ -370,29 +395,6 @@ void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato
         }
         presioneTeclaParaContinuar();
     } while (opcion != '4');
-}
-
-void mostrarMenuPrincipal() {
-    limpiarPantalla();
-    puts("========================================");
-    puts("                Recetario               ");
-    puts("========================================");
-
-    puts("1) Mostrar recetas");
-    puts("2) Buscar por ingredientes");
-    puts("3) Buscar recetas posibles");
-    puts("4) Salir\n");
-}
-
-void menu_ingredientes()
-{
-  printf("Cuantos ingredientes quiere en la receta:\n");
-  printf("-----------------------\n\n");
-  printf("1. Por un ingrediente\n");
-  printf("2. Por dos ingredientes\n");
-  printf("3. Por tres ingredientes\n");
-  printf("4. Por cuatro ingredientes\n");
-  printf("5. Por cinco ingredientes\n");
 }
 
 int comparar_listas(List *lista1, List *lista2, int ingr)
@@ -426,6 +428,23 @@ int comparar_listas(List *lista1, List *lista2, int ingr)
   if (count == ingr)
     return 1;
   return 0;
+}
+
+void menu_ingredientes()
+{
+  printf("Cuantos ingredientes quiere en la receta:\n");
+  printf("-----------------------\n\n");
+  printf("1. Por un ingrediente\n");
+  printf("2. Por dos ingredientes\n");
+  printf("3. Por tres ingredientes\n");
+  printf("4. Por cuatro ingredientes\n");
+  printf("5. Por cinco ingredientes\n");
+}
+
+void omitir_ingredientes()
+{
+    printf("Desea omitir algun ingrediente en las recetas?\n");
+    printf("-----------------------\n\n");
 }
 
 void buscar_por_ingredientes(Map *mapa_ingredientes)
@@ -475,6 +494,19 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
     if(contador == 1) printf("No se encontraron recetas con esos ingredientes\n");
     map_clean(mapa_ingredientes);
 }
+
+//Funcion para mostrar menú
+void mostrarMenuPrincipal() {
+    limpiarPantalla();
+    puts("========================================");
+    puts("                Recetario               ");
+    puts("========================================");
+
+    puts("1) Mostrar recetas");
+    puts("2) Buscar por ingredientes");
+    puts("3) Buscar recetas posibles");
+    puts("4) Salir\n");
+} 
 
 int main() {
     char opcion;
