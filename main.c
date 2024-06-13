@@ -475,17 +475,26 @@ void menu_omitir_ingredientes()
 
 void omitir_ingredientes(List *lista)
 {
+    char ingrediente_actual[20];
+    int ingr = 0;
+    int i = 0;
+    
+    printf("\nIngrese la cantidad de ingredientes que quiere omitir: \n");
+    scanf("%d", &ingr);
+    
     printf("\nRECUERDE: todo en minúsculas y con tilde\n");	
     printf("Inserte los ingredientes que no desea en las recetas: \n");
     getchar();
-
-    char ingrediente_actual[20];
     
-    scanf("%19[^\n]", ingrediente_actual);
-    getchar();
-    aMinusculas(ingrediente_actual);
-    trim(ingrediente_actual);
-    list_pushBack(lista, espacioInicial(ingrediente_actual));
+    while (i < ingr)
+    {
+        scanf("%19[^\n]", ingrediente_actual);
+        getchar();
+        aMinusculas(ingrediente_actual);
+        trim(ingrediente_actual);
+        list_pushBack(lista, espacioInicial(ingrediente_actual));
+        i++;
+    }
 }
 
 void buscar_por_ingredientes(Map *mapa_ingredientes)
@@ -501,7 +510,6 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
   if (strcmp(respuesta, "Y") == 0 || strcmp(respuesta, "y") == 0)
       omitir_ingredientes(omitidos);
 
-  printf("\n%s\n", list_first(omitidos));
   limpiarPantalla();
   menu_ingredientes();
   printf("\nIngrese una opcion valida: \n");

@@ -430,6 +430,32 @@ int comparar_listas(List *lista1, List *lista2, int ingr)
   return 0;
 }
 
+int buscar_en_listas(List *lista1, List *lista2)
+{
+    if (lista1 == NULL || lista2 == NULL)
+    {
+        printf("una de las listas está vacía.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char *aux1 = list_first(lista1);
+    char *aux2 = list_first(lista2);
+    
+    while (aux1 != NULL)
+    {
+        while (aux2 != NULL)
+        {
+            if (strcmp(aux1, aux2) == 0)
+                return 0;
+
+            aux2 = list_next(lista2);
+        }
+        aux1 = list_next(lista1);
+        aux2 = list_first(lista2);
+    }
+    return 1;
+}
+
 void menu_ingredientes()
 {
   printf("Cuantos ingredientes quiere en la receta:\n");
@@ -441,17 +467,51 @@ void menu_ingredientes()
   printf("5. Por cinco ingredientes\n");
 }
 
-void omitir_ingredientes()
+void menu_omitir_ingredientes()
 {
     printf("Desea omitir algun ingrediente en las recetas?\n");
-    printf("-----------------------\n\n");
+    printf("Ingrese su respuesta (Y/N): \n");
+}
+
+void omitir_ingredientes(List *lista)
+{
+    char ingrediente_actual[20];
+    int ingr = 0;
+    int i = 0;
+    
+    printf("\nIngrese la cantidad de ingredientes que quiere omitir: \n");
+    scanf("%d", &ingr);
+    
+    printf("\nRECUERDE: todo en minúsculas y con tilde\n");	
+    printf("Inserte los ingredientes que no desea en las recetas: \n");
+    getchar();
+    
+    while (i < ingr)
+    {
+        scanf("%19[^\n]", ingrediente_actual);
+        getchar();
+        aMinusculas(ingrediente_actual);
+        trim(ingrediente_actual);
+        list_pushBack(lista, espacioInicial(ingrediente_actual));
+        i++;
+    }
 }
 
 void buscar_por_ingredientes(Map *mapa_ingredientes)
 {
+  int ingr = 0;
+  char respuesta[2];
+  List *omitidos = list_create();
+    
+  limpiarPantalla();
+  menu_omitir_ingredientes();
+  scanf("%s", respuesta);
+
+  if (strcmp(respuesta, "Y") == 0 || strcmp(respuesta, "y") == 0)
+      omitir_ingredientes(omitidos);
+
   limpiarPantalla();
   menu_ingredientes();
-  int ingr = 0;
   printf("\nIngrese una opcion valida: \n");
   scanf("%d", &ingr);
 
@@ -463,7 +523,6 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
   char ingrediente_actual[20];
   int i = 0;
 
-
   while (i < ingr)
   {
       scanf("%19[^\n]", ingrediente_actual);
@@ -473,6 +532,8 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
       list_pushBack(ingredientes, espacioInicial(ingrediente_actual));
       i++;
   }
+
+  printf("\n");
 
   MapPair *par = map_search(mapa_ingredientes, ingrediente_actual);
     if(par == NULL) {
@@ -486,12 +547,21 @@ void buscar_por_ingredientes(Map *mapa_ingredientes)
     {
       if (comparar_listas(aux->lista_ingredientes, ingredientes, ingr) == 1)
       {
+        if (omitidos != NULL)
+        {
+            if (buscar_en_listas(omitidos , aux->lista_ingredientes) == 0)
+            {
+                aux = list_next(lista_recetas);
+                continue;
+            }
+        }
         imprimir(aux, contador);
         contador++;
       }
       aux = list_next(lista_recetas);
     }
     if(contador == 1) printf("No se encontraron recetas con esos ingredientes\n");
+    list_clean(omitidos);
     map_clean(mapa_ingredientes);
 }
 
