@@ -4,7 +4,7 @@
 
 typedef List Stack;
 
-Stack *stack_create(Stack *stack) { return list_create(); }
+Stack *stack_create() { return list_create(); }
 
 void stack_push(Stack *stack, void *data) { list_pushFront(stack, data); }
 
