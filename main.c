@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "TDAs/extra.h"
 #include "TDAs/list.h"
 #include "TDAs/stack.h"
@@ -12,7 +13,7 @@
 // **************************************** VARIABLES DINAMICAS (STRUCTs) **************************************** //
 
 // Estructura para almacenar la información de una receta
-typedef struct{
+typedef struct {
   char nombre_receta[30]; // Nombre de la receta
   List *lista_ingredientes; // Lista de ingredientes
   char tipo_de_plato[15]; // Si es acompañamiento, postre, plato principal, etc
@@ -25,7 +26,13 @@ typedef struct {
   List *recetas;
 } recetasxdieta;
 
-// **************************************************************************************************************************** //
+typedef struct {
+    char tipo_busqueda[50];
+    List *ingredientes;
+    char categoria[20];
+} datosHistorial;
+
+//***************************************************************************************************************************** //
 
 // **************************************** FUNCIONES DE FUNCIONES PRINCIPALES **************************************** //
 
@@ -86,13 +93,10 @@ void arreglar_cadena(char *cadena) {
     }
 }
 
-
-
 // Función para pasar una cadena a minúsculas
 void Capitalizar(char *cadena) {
     char *actual = cadena;
-    while (*actual) 
-    {
+    while (*actual){
       if (*actual == ' '  && *actual == cadena[0]) memmove(actual, actual + 1, strlen(actual));
       if(*actual == cadena[0]) *actual = toupper(*actual);
       actual++;
@@ -113,10 +117,7 @@ char *espacioInicial(char *cadena) {
 
 // Función para copiar una lista
 void copiarLista(List *listaCopia, List *listaOriginal) {
-    if (listaOriginal == NULL) {
-        printf("La lista original está vacía.\n");
-        return;
-    }
+    if (listaOriginal == NULL) return;
     List *actual = list_first(listaCopia);
     while (actual != NULL) {
         list_pushBack(listaOriginal, actual);
@@ -241,56 +242,41 @@ void imprimir(receta *receta, int contador) {
     printf("\n");
 }
 
-void actualizar_lista_favoritas(List *lista_favoritas, Map *recetas_ordenadas, int funcion)
-{
-    char opcion;
-    printf("\nDeseas agregar una de estas recetas a tu lista de favoritas? (S/N):\n");
-    if(funcion == 1) getchar();
-    scanf("%c", &opcion);
-    if(opcion == 's' || opcion == 'S')
-    {
-        char opcion_receta[50];
-        printf("\nIngrese el nombre de la receta que desea agregar a tu lista de favoritas:\n");
-        getchar();
-        scanf("%49[^\n]", opcion_receta);
-        MapPair *par = map_search(recetas_ordenadas, opcion_receta);
-        if(par == NULL)
-        {
-            printf("No se encontró ninguna receta con ese nombre\n");
-            printf("Asegurate de escribir el nombre correctamente (Primera letra en mayuscula y con los tildes correspondientes)\n\n");
-        }
-
-        else
-        {
-            list_pushFront(lista_favoritas, par->key);
-            printf("Receta agregada correctamente a tu lista de favoritas!!!\n");
-        }
-    }
+void menu_secundario() {
+    printf("\nMostrar recetas según:\n");
+    printf("-----------------------\n\n");
+    printf("1. Tipo de plato\n");
+    printf("2. Tipo de dieta\n");
+    printf("3. Todas las recetas\n");
+    printf("4. Volver al menú principal\n\n");
 }
 
+void omitir_ingredientes(List *lista){
+    char ingrediente_actual[20];
+    int ingr = 0;
+    int i = 0;
+    
+    printf("\nIngrese la cantidad de ingredientes que quiere omitir: \n");
+    scanf("%d", &ingr);
 
-void mostrar_recetas_favoritas(List *lista_favoritas)
-{
-    limpiarPantalla();
-    printf("Veamos cuales son las recetas que más te gustaron!!!\n\n");
-    printf("Lista de recetas favoritas:\n");
-    printf("---------------------------\n\n");
-    if (list_first(lista_favoritas) == NULL) 
+    if (ingr == 0)
     {
-        printf("Oh, no! Aún no tienes recetas favoritas.\n");
-        printf("Recuerda que siempre puedes agregar recetas a tu lista de favoritos.\n\n");
+        printf("No se omitirá ningún ingrediente\n");
+        return;
     }
-
-    else
+    
+    printf("\nRECUERDE: todo en minúsculas, con tilde y pulse enter para agregar el siguiente ingrediente\n");	
+    printf("Inserte los ingredientes que no desea en las recetas: \n");
+    getchar();
+    
+    while (i < ingr)
     {
-        int contador = 1;
-        receta *aux = list_first(lista_favoritas);
-        while (aux != NULL)
-        {
-            imprimir(aux, contador);
-            contador++;
-            aux = list_next(lista_favoritas);
-        }
+        scanf("%19[^\n]", ingrediente_actual);
+        getchar();
+        Capitalizar(ingrediente_actual);
+        trim(ingrediente_actual);
+        list_pushBack(lista, espacioInicial(ingrediente_actual));
+        i++;
     }
 }
 
@@ -334,50 +320,89 @@ int comparar_listas_posibles(List *lista1, List *lista2, List *ingredientes_falt
   return 0;
 }
 
-void menu_secundario() {
-    printf("\nMostrar recetas según:\n");
-    printf("-----------------------\n\n");
-    printf("1. Tipo de plato\n");
-    printf("2. Tipo de dieta\n");
-    printf("3. Todas las recetas\n");
-    printf("4. Volver al menú principal\n\n");
+bool filtro_receta_repetida(List *lista_favoritas, char *nombre_receta){
+    List *actual = list_first(lista_favoritas);
+    while (actual != NULL){
+        receta *Receta = (receta *) actual;
+        if (strcmp(Receta->nombre_receta, nombre_receta) == 0) return true;
+        actual = list_next(lista_favoritas);
+    }
+    return false;
 }
 
-void omitir_ingredientes(List *lista){
-    char ingrediente_actual[20];
-    int ingr = 0;
-    int i = 0;
-    
-    printf("\nIngrese la cantidad de ingredientes que quiere omitir: \n");
-    scanf("%d", &ingr);
-    
-    printf("\nRECUERDE: todo en minúsculas, con tilde y pulse enter para agregar el siguiente ingrediente\n");	
-    printf("Inserte los ingredientes que no desea en las recetas: \n");
+void eliminar_receta(List *lista_favoritas, Stack *historial) {
+
+    char opcion_receta[50];
+    int bandera = 1;
+    char opcion;
+
+    printf("Ingrese el nombre de la receta que desea eliminar de tu lista de favoritas\n");
+    scanf("%49[^\n]", opcion_receta);
+
+    // Obtén el primer nodo de la lista de favoritas
+    List *aux = list_first(lista_favoritas);
+
+    // Itera sobre la lista de favoritas
+    while (aux != NULL) {
+        receta *Receta = (receta *) aux;
+        // Compara el nombre de la receta actual con el nombre de la receta a eliminar
+        if (strcmp(Receta->nombre_receta, opcion_receta) == 0) {
+            stack_push(historial, Receta);
+            list_popCurrent(lista_favoritas);
+            printf("Receta eliminada correctamente de tu lista de favoritas!!!\n");
+            bandera = 0; break;
+        }
+        // Avanza al siguiente nodo
+        aux = list_next(lista_favoritas);
+    }
+    if(bandera == 1) printf("Lo sentimos, no se encontró ninguna receta con ese nombre\n");
+    printf("\n¿Deseas eliminar otra receta de tu lista de favoritas? (S/N)\n"); getchar();
+    scanf("%c", &opcion); getchar();
+    if(opcion == 's' || opcion == 'S') eliminar_receta(lista_favoritas, historial);
+}
+
+void agregar_receta_favorita(List *lista_favoritas, Map *recetas_ordenadas){
+    char opcion_receta[50], opcion;
+    printf("\nIngrese el nombre de la receta que desea agregar a tu lista de favoritas:\n");
     getchar();
-    
-    while (i < ingr)
+    scanf("%49[^\n]", opcion_receta);
+    MapPair *par = map_search(recetas_ordenadas, opcion_receta);
+    if(par == NULL)
     {
-        scanf("%19[^\n]", ingrediente_actual);
-        getchar();
-        Capitalizar(ingrediente_actual);
-        trim(ingrediente_actual);
-        list_pushBack(lista, espacioInicial(ingrediente_actual));
-        i++;
+        printf("No se encontró ninguna receta con ese nombre\n");
+        printf("Asegurate de escribir el nombre correctamente (Primera letra en mayuscula y con los tildes correspondientes)\n\n");
+    }
+    else
+    {
+        if(filtro_receta_repetida(lista_favoritas, opcion_receta) == false)
+        {
+            list_pushFront(lista_favoritas, par->key);
+            printf("Receta agregada correctamente a tu lista de favoritas!!!\n\n");
+            printf("¿Deseas agregar otra receta a tu lista de favoritas? (S/N):\n"); getchar();
+            scanf("%c", &opcion);
+            if(opcion == 's' || opcion == 'S') agregar_receta_favorita(lista_favoritas, recetas_ordenadas);
+        }
+        else printf("\nYa tienes esa receta en tu lista de favoritas\n");
     }
 }
 
-void mostrar_opciones_historial(){
-    printf("1) Mostrar historial\n2) Regresar al menú principal\n\n");
+void actualizar_lista_favoritas(List *lista_favoritas, Map *recetas_ordenadas, int funcion){
+    char opcion;
+    printf("\nDeseas agregar una de estas recetas a tu lista de favoritas? (S/N):\n");
+    if(funcion == 1) getchar();
+    scanf("%c", &opcion);
+    if(opcion == 's' || opcion == 'S') agregar_receta_favorita(lista_favoritas, recetas_ordenadas);
 }
 
-void mostrar_historial(Stack *historial){
-    printf("Bienvenido al historial!!!\n");
-    printf("Aqui podras ver todas las busquedas que realizaste\n\n");
-    if(stack_top(historial) == NULL) printf("No haz realizado ninguna busqueda\n");
-    
+void agregar_al_historial(Stack *historial, char *tipo_busqueda, List *lista_ingredientes, char *categoria){
+    datosHistorial *datos = (datosHistorial *) malloc(sizeof(datosHistorial));
+    strcpy(datos->tipo_busqueda, tipo_busqueda);
+    copiarLista(datos->ingredientes, lista_ingredientes);
+    strcpy(datos->categoria, categoria);
+    stack_push(historial, datos);
 }
 
-// **************************************************************************************************************************** //
+//***************************************************************************************************************************** //
 
 // **************************************** FUNCIONES SECUNDARIAS DEL PROGRAMA **************************************** //
 
@@ -399,8 +424,9 @@ void buscar_por_plato(Map *mapa_platos, Stack *historial, List *lista_favoritas,
     printf("Ingrese el tipo de plato deseado: ");
     getchar();
     scanf("%19[^\n]", opcion_plato); // Lee la dieta
+    agregar_al_historial(historial, "Por Tipo de Plato", NULL, opcion_plato); 
     MapPair *plato = map_search(mapa_platos, opcion_plato);
-
+    
     if(plato == NULL){
         printf("\nNo se encontraron recetas para el tipo de plato ingresado\n");
         char opcion;
@@ -451,6 +477,7 @@ void buscarDieta(Map *tipo_dieta, Stack *historial, Map *recetas_ordenadas, List
 
     printf("\nIngrese la dieta deseada: ");
     scanf("%s", opcionDieta); // Lee la dieta
+    agregar_al_historial(historial, "Por Tipo de Dieta", NULL, opcionDieta); 
     // Itera sobre el mapa para buscar recetas de la dieta especificada
     pair = map_search(tipo_dieta, opcionDieta);
     if(pair == NULL){
@@ -514,7 +541,69 @@ void menu_ingredientes(){
   printf("5. Por cinco ingredientes\n");
 }
 
-// **************************************************************************************************************************** //
+void mostrar_opciones_historial(){
+    printf("1) Mostrar historial de recetas buscadas\n");
+    printf("2) Mostrar historial de recetas eliminadas de favoritos\n");
+    printf("3) Regresar al menú principal\n\n");
+}
+
+void mostrar_historial_busquedas(Stack *historial){
+    printf("\nBienvenido al historial!!!\n");
+    printf("Aqui podras ver todas las busquedas que realizaste\n\n");
+    Stack *pila_aux = stack_create();
+    if(stack_top(historial) == NULL) printf("No haz realizado ninguna busqueda\n");  
+    else
+    {
+        printf("Estas son todas tus búsquedas:\n\n");
+        printf("-----------------------------\n");
+        datosHistorial *datos = (datosHistorial *)stack_top(historial);
+        while ((datos = (datosHistorial *)stack_pop(historial)) != NULL) {
+            printf("Tipo de busqueda: %s\n", datos->tipo_busqueda);
+            if (datos->ingredientes != NULL) {
+                printf("Categoría: %s\n", datos->categoria);
+            } else {
+                printf("Ingredientes ingresados:");
+                mostrarLista(datos->ingredientes);
+            }
+            printf("\n");
+            stack_push(pila_aux, datos);
+        }
+        // Revertir el orden de la pila
+        while ((datos = (datosHistorial *)stack_pop(pila_aux)) != NULL) {
+            stack_push(historial, datos);
+        }
+    }
+}
+
+void devolver_recetas_eliminadas(Stack *aux, Stack *historial){
+
+    receta* dato = (receta*) stack_top(aux);
+    while((dato = (receta *) stack_pop(historial)) != NULL){
+        stack_push(historial, dato);
+        dato = (receta*) stack_pop(aux);
+    }
+}
+
+void mostrar_historial_eliminados(Stack *historial){
+
+    Stack* aux = stack_create();
+    int contador = 1;
+    
+    printf("\nBienvenido al historial de recetas eliminadas de favoritos!!!\n");
+    printf("Aquí podras ver todas las recetas eliminadas\n\n");
+    if(stack_top(historial) == NULL) printf("No haz realizado ninguna eliminación\n");
+    else{
+        receta *datos = (receta *) stack_top(historial);
+        while((datos = (receta *) stack_pop(historial)) != NULL){
+            imprimir(datos, contador);
+            contador++;
+            stack_push(aux, datos);
+        }
+    }
+    devolver_recetas_eliminadas(aux, historial);
+}
+
+//***************************************************************************************************************************** //
 
 // **************************************** FUNCIONES PRINCIPALES DEL PROGRAMA **************************************** //
 
@@ -630,40 +719,38 @@ void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato
 
 void buscar_por_ingredientes(Map *mapa_ingredientes, Stack *historial, List *lista_favoritos, Map* recetas_ordenadas){
     int ingr = 0;
-    char respuesta[2];
+    char respuesta;
     List *omitidos = list_create();
-
     limpiarPantalla();
     menu_omitir_ingredientes();
-      scanf("%c", respuesta);
-    if (strcmp(respuesta, "S") == 0 || strcmp(respuesta, "s") == 0) omitir_ingredientes(omitidos);
-
-  limpiarPantalla();
-  menu_ingredientes();
-  printf("\nIngrese una opcion valida: \n");
-  scanf("%d", &ingr);
-
-  printf("\nRECUERDE: todo en minúsculas y con tilde\n");	
-  printf("Inserte los ingredientes: \n");
-  getchar();
-
-  List *ingredientes = list_create();
-  char ingrediente_actual[20];
-  int i = 0;
-
-  while (i < ingr)
-  {
-      scanf("%19[^\n]", ingrediente_actual);
-      getchar();
-      Capitalizar(ingrediente_actual);
-      trim(ingrediente_actual);
-      list_pushBack(ingredientes, espacioInicial(ingrediente_actual));
-      i++;
-  }
-  printf("\n");
-
-  List *recetas_encontradas = list_create();
-  MapPair *par = map_search(mapa_ingredientes, ingrediente_actual);
+    scanf("%c", &respuesta);
+    getchar(); // Limpia el buffer
+    if (respuesta == 'S' || respuesta == 's') omitir_ingredientes(omitidos);
+    limpiarPantalla();
+    menu_ingredientes();
+    printf("\nIngrese una opcion valida: \n");
+    scanf("%d", &ingr);
+    getchar(); // Limpia el buffer
+    printf("\nRECUERDE: todo en minúsculas y con tilde\n");	
+    printf("Inserte los ingredientes: \n");
+    List *ingredientes = list_create();
+    if ()
+        
+    char ingrediente_actual[20];
+    int i = 0;
+    while (i < ingr)
+    {
+        scanf("%19[^\n]", ingrediente_actual);
+        getchar(); // Limpia el buffer
+        Capitalizar(ingrediente_actual);
+        trim(ingrediente_actual);
+        list_pushBack(ingredientes, espacioInicial(ingrediente_actual));
+        i++;
+    }
+    printf("\n");
+    agregar_al_historial(historial, " Ingredientes", ingredientes, NULL);
+    List *recetas_encontradas = list_create();
+    MapPair *par = map_search(mapa_ingredientes, ingrediente_actual);
     if(par == NULL) {
         printf("No se encontraron recetas con esos ingredientes\n");
         return;
@@ -689,16 +776,15 @@ void buscar_por_ingredientes(Map *mapa_ingredientes, Stack *historial, List *lis
       }
       aux = list_next(lista_recetas);
     }
-
-    actualizar_lista_favoritas(lista_favoritos, recetas_ordenadas, 0);
-    
+    actualizar_lista_favoritas(lista_favoritos, recetas_ordenadas, 0);  
     if(contador == 1) printf("No se encontraron recetas con esos ingredientes\n");
     list_clean(omitidos);
     map_clean(mapa_ingredientes);
     char opcion;
-    printf("¿Desea buscar recetas con otros ingredientes? (S/N): "); getchar();
+    printf("¿Desea buscar recetas con otros ingredientes? (S/N): ");
+    getchar(); // Limpia el buffer
     scanf("%c", &opcion);
-    
+    getchar(); // Limpia el buffer
     if(opcion == 's' || opcion == 'S'){
         limpiarPantalla();
         buscar_por_ingredientes(mapa_ingredientes, historial, lista_favoritos, recetas_ordenadas);
@@ -725,6 +811,7 @@ void buscar_recetas_posibles(Map *recetas_ordenadas, Stack *historial, List *lis
       i++;
   }
   printf("\n");
+  agregar_al_historial(historial, "Recetas Posibles", ingredientes, NULL);
   MapPair *pair = map_first(recetas_ordenadas);
   int contador = 1;
   while (pair != NULL)
@@ -745,26 +832,61 @@ void buscar_recetas_posibles(Map *recetas_ordenadas, Stack *historial, List *lis
   actualizar_lista_favoritas(lista_favoritos, recetas_ordenadas, 0);
 }
 
-void Historial(Stack *historial){
+void mostrar_recetas_favoritas(List *lista_favoritas, Stack *historial){
+    limpiarPantalla();
+    printf("Veamos cuales son las recetas que más te gustaron!!!\n\n");
+    printf("Lista de recetas favoritas:\n");
+    printf("---------------------------\n\n");
+    if (list_first(lista_favoritas) == NULL) 
+    {
+        printf("Oh, no! Aún no tienes recetas favoritas.\n");
+        printf("Recuerda que siempre puedes agregar recetas a tu lista de favoritos.\n\n");
+        return;
+    }
+
+    else
+    {
+        int contador = 1;
+        receta *aux = list_first(lista_favoritas);
+        while (aux != NULL){
+            imprimir(aux, contador);
+            contador++;
+            aux = list_next(lista_favoritas);
+        }
+    }
+
+    printf("¿Deseas eliminar alguna de tus recetas favoritas? (S/N)\n"); getchar();
+    char opcion;
+    scanf("%c", &opcion); getchar();
+    if(opcion == 's' || opcion == 'S') eliminar_receta(lista_favoritas, historial);
+}
+
+void Historial(Stack *historial_busquedas, Stack *historial_eliminados){
     limpiarPantalla();
     printf("Menú historial\n");
     printf("--------------\n\n");
     mostrar_opciones_historial();
     char opcion;
-    scanf("%c", &opcion);
+    printf("Ingrese su opción:\n"); getchar();
+    scanf("%c", &opcion); getchar();
     switch (opcion){
         case '1':
-            mostrar_historial(historial);
+            mostrar_historial_busquedas(historial_busquedas);
             break;
         case '2':
+            mostrar_historial_eliminados(historial_eliminados);
+            break;
+        case '3':
             limpiarPantalla();
             return;
+        default:
+            puts("Opción no válida. Por favor, intente de nuevo.");
     }
 }
 
 //***************************************************************************************************************************** //
 
-// **************************************** FUNCIÓN MAIN **************************************** //
+// **************************************** FUNCIÓN MAIN **************************************** 
 
 int main() {
     char opcion;
@@ -773,28 +895,29 @@ int main() {
     Map *tipo_dieta = map_create(is_equal_str);
     Map *mapa_ingredientes = map_create(is_equal_str);
     List *lista_favoritos = list_create();
-    Stack *historial = stack_create();
-    cargar_recetas(recetas_ordenadas, tipo_de_plato, tipo_dieta, mapa_ingredientes);
+    Stack *historial_busquedas = stack_create();
+    Stack *historial_eliminados = stack_create();
     
+    cargar_recetas(recetas_ordenadas, tipo_de_plato, tipo_dieta, mapa_ingredientes);
     do {
         mostrarMenuPrincipal();
         printf("Ingrese su opción: ");
         scanf(" %c", &opcion);
         switch (opcion) {
         case '1':
-            mostrar_recetas(recetas_ordenadas, tipo_dieta, tipo_de_plato, lista_favoritos, historial);
+            mostrar_recetas(recetas_ordenadas, tipo_dieta, tipo_de_plato, lista_favoritos, historial_busquedas);
             break;
         case '2':
-            buscar_por_ingredientes(mapa_ingredientes, historial, lista_favoritos, recetas_ordenadas);
+            buscar_por_ingredientes(mapa_ingredientes, historial_busquedas, lista_favoritos, recetas_ordenadas);
             break;
         case '3':
-            buscar_recetas_posibles(recetas_ordenadas, historial, lista_favoritos);
+            buscar_recetas_posibles(recetas_ordenadas, historial_busquedas, lista_favoritos);
             break;
         case '4':
-            mostrar_recetas_favoritas(lista_favoritos);
+            mostrar_recetas_favoritas(lista_favoritos, historial_eliminados);
             break;
         case '5':
-            Historial(historial);
+            Historial(historial_busquedas, historial_eliminados);
             break;
         case '6':
             puts("Saliendo del recetario...");
@@ -807,4 +930,4 @@ int main() {
     return 0;
 }
 
-// **************************************************************************************************************************** //
+//***************************************************************************************************************************** //
