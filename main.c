@@ -293,7 +293,7 @@ void omitir_ingredientes(List *lista){
     }
 }
 
-// Funcoión para comparar 2 listas de ingredientes, debe tener por lo menos 3 coincidencias
+// Función para comparar 2 listas de ingredientes, debe tener por lo menos 3 coincidencias
 int comparar_listas_posibles(List *lista1, List *lista2, List *ingredientes_faltantes){
     if (lista1 == NULL || lista2 == NULL) { // Si una de las listas está vacía
         printf("Una de las listas está vacía.\n");
@@ -872,7 +872,7 @@ void mostrarMenuPrincipal(){
     printf("\n");
 }
 
-// Función para casos del sub menú 1 (Ver todas las recetas)
+// Función para casos del sub menú 1 (Ver todas las recetas)  
 void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato , List *lista_favoritos, Stack *historial) {
     char opcion; // Variable para almacenar la opción seleccionada por el usuario
     do {
@@ -900,82 +900,85 @@ void mostrar_recetas(Map *recetas_ordenadas, Map *tipo_dieta, Map *tipo_de_plato
     } while (opcion != '4'); // Repetir el bucle mientras la opción no sea '4' (volver al menú principal)
 }
 
-//
-void buscar_por_ingredientes(Map *mapa_ingredientes, Stack *historial, List *lista_favoritos, Map* recetas_ordenadas){
-    int ingr = 0; // Variable para almacenar la cantidad de ingredientes ingresados por el usuario
-    List *omitidos = list_create(); // Lista para almacenar las har respuesta;
-    char respuesta; // Variable para almacenar la respuesta del usuario
+// Función para buscar por ingredientes
+void buscar_por_ingredientes(Map *mapa_ingredientes, Stack *historial, List *lista_favoritos, Map *recetas_ordenadas) {
+    int ingr = 0;
+    char respuesta;
+    List *omitidos = list_create();
+
     limpiarPantalla();
     menu_omitir_ingredientes();
-    getchar();
-    scanf("%c", &respuesta); 
-    getchar(); // Esperar a que el usuario presione Enter
-    if (respuesta == 'S' || respuesta == 's'){
-        // Si quiere omitir ingredientes, llama a la función:
+    getchar(); // Limpiar el buffer
+    scanf("%c", &respuesta);
+    getchar(); // Limpiar el buffer
+
+    if (respuesta == 'S' || respuesta == 's') {
         omitir_ingredientes(omitidos);
-        getchar();
+        getchar(); // Limpiar el buffer después de omitir_ingredientes
     }
+
     printf("\n");
     menu_ingredientes();
-    printf("\nIngrese una opcion valida: \n");
+    printf("\nIngrese una opción válida: \n");
     scanf("%d", &ingr);
-    getchar(); // Limpia el buffer
+    getchar(); // Limpiar el buffer
+
     printf("\n[RECUERDE: la primera letra en mayúscula y con los tildes correspondientes]\n");
     printf("Inserte los ingredientes: \n");
+
     List *ingredientes = list_create();
     char ingrediente_actual[20];
     int i = 0;
-    while (i < ingr)
-    {
+
+    while (i < ingr) {
         scanf("%19[^\n]", ingrediente_actual);
-        getchar(); // Limpia el buffer
+        getchar(); // Limpiar el buffer
         Capitalizar(ingrediente_actual);
         trim(ingrediente_actual);
         list_pushBack(ingredientes, espacioInicial(ingrediente_actual));
         i++;
     }
+
     printf("\n");
     mostrarLista(ingredientes);
-    //getchar();
     agregar_al_historial(historial, " Ingredientes", ingredientes, "Todas");
-    List *recetas_encontradas = list_create();
 
+    List *recetas_encontradas = list_create();
     MapPair *par = map_search(mapa_ingredientes, ingrediente_actual);
-    if(par == NULL) {
+
+    if (par == NULL) {
         printf("No se encontraron recetas con esos ingredientes\n");
+        list_clean(omitidos); // Limpiar lista de omitidos
         return;
     }
+
     List *lista_recetas = par->value;
     receta *aux = list_first(lista_recetas);
     int contador = 1;
-    while (aux != NULL) 
-    {
-      if (comparar_listas(aux->lista_ingredientes, ingredientes, ingr) == 1)
-      {
-        if (omitidos != NULL)
-        {
-            if (buscar_en_listas(omitidos , aux->lista_ingredientes) == 0)
-            {
+
+    while (aux != NULL) {
+        if (comparar_listas(aux->lista_ingredientes, ingredientes, ingr) == 1) {
+            if (omitidos != NULL && buscar_en_listas(omitidos, aux->lista_ingredientes) == 0) {
                 aux = list_next(lista_recetas);
                 continue;
             }
+            imprimir(aux, contador);
+            list_pushBack(recetas_encontradas, aux);
+            contador++;
         }
-        imprimir(aux, contador);
-        list_pushBack(recetas_encontradas, aux);
-        contador++;
-      }
-      aux = list_next(lista_recetas);
+        aux = list_next(lista_recetas);
     }
+
     actualizar_lista_favoritas(lista_favoritos, recetas_ordenadas, 0);
-    list_clean(omitidos);
+    list_clean(omitidos); // Limpiar lista de omitidos
 
     printf("¿Desea buscar recetas con otros ingredientes? (S/N): ");
-    getchar(); // Limpia el buffer
+    getchar(); // Limpiar el buffer
     scanf("%c", &respuesta);
-    getchar(); // Limpia el buffer
-    if(respuesta == 's' || respuesta == 'S'){
-        limpiarPantalla();
-        // Si quiere buscar con otros ingredientes, llama a la función:
+    getchar(); // Limpiar el buffer
+
+    if (respuesta == 's' || respuesta == 'S') {
+        // Llamar recursivamente con los mismos parámetros
         buscar_por_ingredientes(mapa_ingredientes, historial, lista_favoritos, recetas_ordenadas);
     }
 }

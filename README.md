@@ -32,6 +32,8 @@ El usuario tendra la opción de eliminar ... del historial, también podrá ver 
 ### Problemas conocidos:
 * Funciones con mismo objetivo por ejemplo; "arreglar cadena" y "trim"
 * Acciones repetitivas dentro de las funciones
+* Posibles problema con el uso de recursividad al momento de limpiar el buffer
+
 ### A mejorar:
 * Mejorar la legibilidad.
 * Implementar mayor modularización del programa.
@@ -72,7 +74,16 @@ Ingrese su opción:
 ````
 #### El programa muestra el submenú de la opción seleccionada, el usuario deseará hacia donde continuar.
 
-### Paso 3: Tipo de plato
+### Paso 3: Omitir ingredientes
+
+````
+Desea omitir algun ingrediente en las recetas?
+Ingrese su respuesta (S/N): 
+"N"
+````
+#### El programa pregunta al usuario si desea omitir ingredientes, es decir, si desea que se omitan las recetas que contengan los ingredientes que ingrese el usuario.
+
+### Paso 4: Tipo de plato
 ````
 Platos disponibles:
 
@@ -89,9 +100,9 @@ Ingrese el tipo de plato deseado:
 "Desayuno"
 
 ````
-#### El programa muestra el siguiente menú y las posibles opciones, el usuario escoge que opción desea.
+#### El usuario no seleccionó omitir ingredeintes, por lo tanto programa muestra el siguiente menú y las posibles opciones, el usuario escoge que opción desea.
 
-### Paso 4: Tipo de plato: "Desayuno"
+### Paso 5: Tipo de plato: "Desayuno"
 
 ````
 Recetas disponibles para el plato deseado:
@@ -114,7 +125,7 @@ Deseas agregar una de estas recetas a tu lista de favoritas? (S/N):
 ````
 #### El usuario desea buscar por tipo de plato, especificamente de "Desayuno", el programa ha mostrado los platos disponibles según este tipo, ahora el programa consulta si desea agregar recetas a su lista de favoritas.
 
-### Paso 5: Agregar a lista de favoritos
+### Paso 6: Agregar a lista de favoritos
 
 ````
 Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
@@ -123,7 +134,7 @@ Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
 ````
 #### El usuario seleccionó agregar listas a favoritos e ingresa la opción que desea.
 
-### Paso 6: Seguir agregando o no a la lista de favoritos
+### Paso 7: Seguir agregando o no a la lista de favoritos
 
 ````
 Receta agregada correctamente a tu lista de favoritas!!!
@@ -136,7 +147,7 @@ Presione una tecla para continuar...
 ````
 #### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista.
 
-### Paso 7: Nueva Búsqueda
+### Paso 8: Nueva Búsqueda
 
 ````
 Mostrar recetas según:
@@ -152,7 +163,25 @@ Ingrese su opción:
 ````
 #### El programa ha regresado al menú anterior, ahora el usuario realizará una nueva búsqueda.
 
-### Paso 8: Tipo de dieta 
+### Paso 9: Omitir ingredientes
+
+````
+Desea omitir algun ingrediente en las recetas?
+Ingrese su respuesta (S/N): 
+"S"
+
+Ingrese la cantidad de ingredientes que quiere omitir: 
+"2"
+
+RECUERDE: Primera letra en mayúscula, con tildes correspondientes y pulse enter para agregar el siguiente ingrediente
+Inserte los ingredientes que no desea en las recetas: 
+"huevo"
+"leche"
+````
+
+### Paso 10:
+
+#### El programa pregunta al usuario si desea omitir ingredientes, el usuario ingresa las respuestas que correspondan
 
 ````
 Dietas disponibles:
@@ -166,11 +195,12 @@ Dietas disponibles:
 7) Pescetariano
 
 
-Ingrese la dieta deseada: "Vegano"
+Ingrese la dieta deseada:
+"Vegano"
 ````
 #### El programa muestra el siguiente menú y las posibles opciones, el usuario escoge que opción desea.
 
-### Paso 9: Tipo de dieta: Vegano
+### Paso 11: Tipo de dieta: Vegano
 
 ````
 Recetas disponibles para el plato deseado: Vegano
@@ -248,7 +278,7 @@ Deseas agregar una de estas recetas a tu lista de favoritas? (S/N):
 ````
 #### El usuario desea buscar por tipo de dieta, especificamente de "Vegano", el programa ha mostrado los platos disponibles según este tipo, ahora el programa consulta si desea agregar recetas a su lista de favoritas.
 
-### Paso 10: Agregar a lista de favoritos
+### Paso 12: Agregar a lista de favoritos
 
 ````
 Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
@@ -257,7 +287,7 @@ Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
 ````
 #### El usuario seleccionó agregar listas a favoritos e ingresa la opción que desea.
 
-### Paso 11: Seguir agregando o no a la lista de favoritos
+### Paso 13: Seguir agregando o no a la lista de favoritos
 
 ````
 Receta agregada correctamente a tu lista de favoritas!!!
@@ -270,7 +300,7 @@ Presione una tecla para continuar...
 ````
 #### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista.
 
-### Paso 12: Regreso
+### Paso 14: Regreso
 
 ````
 Mostrar recetas según:
@@ -283,10 +313,12 @@ Mostrar recetas según:
 
 Ingrese su opción: 
 "4"
+Volviendo...
+Presione una tecla para continuar...
 ````
 #### El programa ha regresado al menú anterior, ahora el usuario realizará una nueva búsqueda, pero de otro tipo.
 
-### Paso 13: Seleccionar nueva búsqueda deseada
+### Paso 15: Seleccionar nueva búsqueda deseada
 
 ````
 ========================================
@@ -304,7 +336,7 @@ Ingrese su opción:
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 14: Omitir ingredientes
+### Paso 16: Omitir ingredientes
 
 ````
 Desea omitir algun ingrediente en las recetas?
@@ -321,7 +353,7 @@ Inserte los ingredientes que no desea en las recetas:
 ````
 #### El programa consulta si el usuario desea omitir algun ingrediente, el usuario selecciona su elección.
 
-### Paso 15: Búsqueda por ingredientes
+### Paso 17: Búsqueda por ingredientes
 
 ````
 Cuantos ingredientes quiere en la receta:
@@ -343,18 +375,24 @@ Inserte los ingredientes:
 ````
 #### El programa muestra el menú de búsqueda y las opciones para el usuario
 
-### Paso 16: Búsqueda por 2 ingredientes: "arroz" y "leche"
+### Paso 18: Búsqueda por 2 ingredientes: "arroz" y "leche"
 
 ````
-.... recetas posibles
+1. Receta: Arroz con Leche
+    Tipo de plato: Postre
+    Ingredientes: Arroz, Leche, Azúcar, Canela, Vainilla
+    Dietas: Vegetariano, Lacto-vegetariano, Omnívoro
+    Preparacion: Cocina el arroz en leche con azúcar, canela y vainilla a fuego lento hasta que esté cremoso
 
 Deseas agregar una de estas recetas a tu lista de favoritas? (S/N):
+"N"
+¿Desea buscar recetas con otros ingredientes? (S/N): 
 "N"
 Presione una tecla para continuar...
 ````
 #### El programa muestra las recetas solicitadas y consulta al usuario si desea agregar alguna receta a la lista de favoritos
 
-### Paso 17: Seleccionar nueva búsqueda deseada
+### Paso 19: Seleccionar nueva búsqueda deseada
 
 ````
 ========================================
@@ -368,10 +406,15 @@ Presione una tecla para continuar...
 6. Salir del recetario
 
 Ingrese su opción: "3"
+
+Desea omitir algun ingrediente en las recetas?
+Ingrese su respuesta (S/N): 
+"N"
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 18: Elección de ingredientes para la búsqueda
+
+### Paso 20: Elección de ingredientes para la búsqueda
 
 ````
 [RECUERDE: la primera letra en mayúscula y con los tildes correspondientes]
@@ -384,7 +427,7 @@ Inserte los ingredientes:
 ````
 #### El programa muestra el menú para que el usuario ingrese sus ingredientes
 
-### Paso 19: Elección de ingredientes para la búsqueda
+### Paso 21: Elección de ingredientes para la búsqueda
 
 ````
 1. Receta: Omelette de Queso
@@ -400,7 +443,7 @@ Deseas agregar una de estas recetas a tu lista de favoritas? (S/N):
 ````
 #### El programa muestra las recetas que coincidan con los requisitos y consulta si el usuario desea agregar alguna receta a favoritos
 
-### Paso 20: Agregar a lista de favoritos
+### Paso 22: Agregar a lista de favoritos
 
 ````
 Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
@@ -409,18 +452,20 @@ Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
 ````
 #### El usuario seleccionó agregar listas a favoritos e ingresa la opción que desea.
 
-### Paso 21: Seguir agregando o no a la lista de favoritos
+### Paso 23: Seguir agregando o no a la lista de favoritos
 
 ````
 Receta agregada correctamente a tu lista de favoritas!!!
 
 ¿Deseas agregar otra receta a tu lista de favoritas? (S/N):
 "N"
+¿Deseas realizar otra búsqueda? (S/N):
+"N"
 Presione una tecla para continuar...
 ````
 #### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista, por lo tanto regresará al menú rin
 
-### Paso 22: Seleccionar una nueva opción 
+### Paso 24: Seleccionar una nueva opción 
 
 ````
 ========================================
@@ -438,7 +483,7 @@ Ingrese su opción:
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 23: Recetas favoritas
+### Paso 25: Recetas favoritas
 
 ````
 Veamos cuales son las recetas que más te gustaron!!!
@@ -469,7 +514,7 @@ Lista de recetas favoritas:
 ````
 #### El usuario visualiza todas sus recetas favoritas y elige si eliminar alguna de ellas
 
-### Paso 24: Eliminar recetas de favoritas
+### Paso 26: Eliminar recetas de favoritas
 
 ````
 Ingrese el nombre de la receta que desea eliminar de tu lista de favoritas
@@ -482,7 +527,49 @@ Receta eliminada correctamente de tu lista de favoritas!!!
 ````
 #### El usuario eliminó correctamente una recetas de su lista de favoritas. Por ahora el usuario no desea seguir eliminando, por lo tanto, regresará al menú principal.
 
-### Paso 25: Seleccionar una nueva opción 
+### Paso 27: Nueva opción
+
+````
+========================================
+                 Recetario                
+========================================
+1. Ver todas las recetas
+2. Buscar recetas por ingredientes
+3. Buscar recetas sugeridas
+4. Recetas favoritas
+5. Historial de búsquedas
+6. Salir del recetario
+
+Ingrese su opción: 
+"4"
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+### Paso 28: Visualización ista de favoritas actualizadas
+````
+Veamos cuales son las recetas que más te gustaron!!!
+
+Lista de recetas favoritas:
+---------------------------
+
+1. Receta: Omelette de Queso
+    Tipo de plato: Desayuno
+    Ingredientes: Huevo, Queso, Leche, Sal, Pimienta
+    Dietas: Vegetariano, Ovo-vegetariano, Omnívoro
+    Preparacion: Bate los huevos con leche, sal y pimienta, vierte en una sartén caliente, añade el queso rallado y cocina hasta que el huevo esté cuajado
+
+2. Receta: Guacamole
+    Tipo de plato: Aperitivo
+    Ingredientes: Aguacate, Tomate, Cebolla, Cilantro, Limón
+    Dietas: Vegano, Vegetariano, Lacto-vegetariano, Ovo-vegetariano, Pescetariano, Flexitariano, Omnívoro
+    Preparacion: Machaca los aguacates, mezcla con tomate, cebolla, cilantro picados y jugo de limón, sazona al gusto
+
+¿Deseas eliminar alguna de tus recetas favoritas? (S/N)
+"N"
+````
+#### El usuario desea ver su lista actualizada para comprobar que estuviera todo en orden
+
+### Paso 29: Seleccionar una nueva opción 
 
 ````
 ========================================
@@ -500,7 +587,7 @@ Ingrese su opción:
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 26: Historial
+### Paso 30: Historial
 
 ````
 Menú historial
@@ -515,7 +602,50 @@ Ingrese su opción:
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 26: Historial
+### Paso 31: Historial
+
+````
+Bienvenido al historial!!!
+Aqui podras ver todas las busquedas que realizaste
+
+Estas son todas tus búsquedas:
+
+-----------------------------
+Tipo de busqueda: Recetas Posibles
+Ingredientes ingresados: Huevo, Harina, Sal, Queso, Tomate
+
+Tipo de busqueda:  Ingredientes
+Ingredientes ingresados: Arroz, Leche
+
+Tipo de busqueda: Por Tipo de Dieta
+Categoría: Vegano
+
+Tipo de busqueda: Por Tipo de Plato
+Categoría: Desayuno
+
+Presione una tecla para continuar...
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+### Paso 32: Seleccionar una nueva opción 
+
+````
+========================================
+                 Recetario                
+========================================
+1. Ver todas las recetas
+2. Buscar recetas por ingredientes
+3. Buscar recetas sugeridas
+4. Recetas favoritas
+5. Historial de búsquedas
+6. Salir del recetario
+
+Ingrese su opción: 
+"5"
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+### Paso 33: Historial
 
 ````
 Menú historial
@@ -526,7 +656,50 @@ Menú historial
 3) Regresar al menú principal
 
 Ingrese su opción:
-"1"
+"2"
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+
+
+### Paso 34: Historial
+````
+Bienvenido al historial de recetas eliminadas de favoritos!!!
+Aquí podras ver todas las recetas eliminadas
+
+1. Receta: Pancakes
+    Tipo de plato: Desayuno
+    Ingredientes: Harina, Leche, Huevo, Azúcar, Mantequilla
+    Dietas: Vegetariano, Ovo-vegetariano, Flexitariano, Omnívoro
+    Preparacion: Mezcla la harina con leche, huevo y azúcar, vierte pequeñas porciones en una sartén con mantequilla derretida y cocina hasta que aparezcan burbujas, voltea y cocina hasta dorar
+
+Presione una tecla para continuar...
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+### Paso 35: Seleccionar una nueva opción 
+
+````
+========================================
+                 Recetario                
+========================================
+1. Ver todas las recetas
+2. Buscar recetas por ingredientes
+3. Buscar recetas sugeridas
+4. Recetas favoritas
+5. Historial de búsquedas
+6. Salir del recetario
+
+Ingrese su opción: 
+"6"
+````
+#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+
+### Paso 36: Seleccionar una nueva opción 
+
+````
+Saliendo del recetario...
+Presione una tecla para continuar...
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
