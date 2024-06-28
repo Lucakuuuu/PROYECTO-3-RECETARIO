@@ -1,10 +1,10 @@
 ## Descripción
 
-
+Esta aplicación permite gestionar recetas de cocina, ofreciendo funcionalidades como la visualización de recetas según el tipo de plato o dieta seleccionados por el usuario. También permite buscar recetas por ingredientes específicos, asegurando que las recetas mostradas contengan estrictamente todos los ingredientes ingresados. Además, cuenta con una función para sugerir recetas basadas en al menos tres de los cinco ingredientes proporcionados por el usuario. Los usuarios pueden agregar recetas a su lista de favoritas y gestionarlas, así como consultar su historial de búsquedas y recetas eliminadas de favoritos. Adicionalmente, se ofrece la opción de omitir ingredientes no deseados al realizar cualquier tipo de búsqueda.
 
 ## Cómo compilarlo
 
-1. Abre el enlace "" para redirigirte al programa en repl.it.
+1. Abre el enlace "" para redirigirte al programa en replit.
 2. Inicia sesión en caso de que no esté iniciada.
 3. En caso de que te aparezca, selecciona la opción "Fork & RUN", en caso de que no te aparezca pase al siguiente paso.
 4. Oprime el botón "Run" para compilar y ejecutar el programa.
@@ -25,9 +25,9 @@
 * **Buscar recetas sugeridas**: Muestra recetas posibles dependiendo los ingredientes que ingrese el usuario, este debe ingresar 5, las recetas que se muestren coinciden en por lo menos 3 ingredientes.
 * **Recetas favoritas**: Muestra las recetas favoritas agregadas anteriormente por el usuario, ya que al momento que se realiza cualquier tipo de búsqueda, se le consulta al usuario si desea agregar una receta a su lista de favoritas.
 Si existen recetas en la lista, el usuario tendrá la opción de eliminar las que desee.
-* **Historial de búsquedas**: Muestra ...
-El usuario tendra la opción de eliminar ... del historial, también podrá ver la lista de los que eliminó-
-* **omitir ingredientes**:  Al momento de realizar una búsqueda de cualquier tipo  primero se le preguntará al usuario si desea omitir algún ingrediente, así si el usuario desea evitar recetas con ciertos ingredientes, usará esta opción.
+* **Historial de búsquedas**: Muestra todas las búsquedas realizadas por el usuario anteriormente.
+También, el usuario tendra la opción de ver su historial de recetas eliminadas de su lista de favoritas.
+* **Omitir ingredientes**:  Al momento de realizar una búsqueda de cualquier tipo  primero se le preguntará al usuario si desea omitir algún ingrediente, así si el usuario desea evitar recetas con ciertos ingredientes, usará esta opción.
 
 ### Problemas conocidos:
 * Funciones con mismo objetivo por ejemplo; "arreglar cadena" y "trim"
@@ -37,6 +37,8 @@ El usuario tendra la opción de eliminar ... del historial, también podrá ver 
 ### A mejorar:
 * Mejorar la legibilidad.
 * Implementar mayor modularización del programa.
+* Implementar recursividad en todas las funciones
+* Manejo de ingresos erróneos por parte del usuario
   
 ## Ejemplo de uso
 
@@ -58,7 +60,7 @@ Ingrese su opción:
 ````
 #### El usuario visualiza el menú principal y selecciona la opción que desee
 
-### Paso 2: Mostrar recetas
+### Paso 2: Mostrar recetas tipo de plato
 
 ````
 Mostrar recetas según:
@@ -83,7 +85,7 @@ Ingrese su respuesta (S/N):
 ````
 #### El programa pregunta al usuario si desea omitir ingredientes, es decir, si desea que se omitan las recetas que contengan los ingredientes que ingrese el usuario.
 
-### Paso 4: Tipo de plato
+### Paso 4: Elección del tipo de plato
 ````
 Platos disponibles:
 
@@ -132,7 +134,7 @@ Ingrese el nombre de la receta que desea agregar a tu lista de favoritas:
 
 "Pancakes"
 ````
-#### El usuario seleccionó agregar listas a favoritos e ingresa la opción que desea.
+#### El usuario seleccionó agregara a lista de favoritas e ingresa la opción que desea.
 
 ### Paso 7: Seguir agregando o no a la lista de favoritos
 
@@ -147,7 +149,7 @@ Presione una tecla para continuar...
 ````
 #### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista.
 
-### Paso 8: Nueva Búsqueda
+### Paso 8: Nueva Búsqueda, por tipo de dieta
 
 ````
 Mostrar recetas según:
@@ -178,10 +180,9 @@ Inserte los ingredientes que no desea en las recetas:
 "huevo"
 "leche"
 ````
+#### El usuario ha deseado buscar por tipo de dieta, ahora el programa pregunta si desea omitir ingredientes
 
-### Paso 10:
-
-#### El programa pregunta al usuario si desea omitir ingredientes, el usuario ingresa las respuestas que correspondan
+### Paso 10: Elección del tipo de dieta
 
 ````
 Dietas disponibles:
@@ -198,7 +199,7 @@ Dietas disponibles:
 Ingrese la dieta deseada:
 "Vegano"
 ````
-#### El programa muestra el siguiente menú y las posibles opciones, el usuario escoge que opción desea.
+#### EL usuario ha omitido sus ingredientes, ahora el programa muestra el siguiente menú y las posibles opciones, el usuario escoge que opción desea.
 
 ### Paso 11: Tipo de dieta: Vegano
 
@@ -316,9 +317,9 @@ Ingrese su opción:
 Volviendo...
 Presione una tecla para continuar...
 ````
-#### El programa ha regresado al menú anterior, ahora el usuario realizará una nueva búsqueda, pero de otro tipo.
+#### El programa ha regresado al menú anterior, ahora el usuario seleccionará su opción siguiente
 
-### Paso 15: Seleccionar nueva búsqueda deseada
+### Paso 15: Seleccionar nueva búsqueda deseada, por ingredientes
 
 ````
 ========================================
@@ -351,9 +352,9 @@ Inserte los ingredientes que no desea en las recetas:
 "ajo"
 
 ````
-#### El programa consulta si el usuario desea omitir algun ingrediente, el usuario selecciona su elección.
+#### El programa consulta si el usuario desea omitir algun ingrediente, el usuario selecciona su preferencia.
 
-### Paso 17: Búsqueda por ingredientes
+### Paso 17: Búsqueda por ingredientes (2)
 
 ````
 Cuantos ingredientes quiere en la receta:
@@ -392,7 +393,7 @@ Presione una tecla para continuar...
 ````
 #### El programa muestra las recetas solicitadas y consulta al usuario si desea agregar alguna receta a la lista de favoritos
 
-### Paso 19: Seleccionar nueva búsqueda deseada
+### Paso 19: Seleccionar nueva búsqueda deseada, buscar recetas sugeridas
 
 ````
 ========================================
@@ -427,7 +428,7 @@ Inserte los ingredientes:
 ````
 #### El programa muestra el menú para que el usuario ingrese sus ingredientes
 
-### Paso 21: Elección de ingredientes para la búsqueda
+### Paso 21: Recetas con los ingredientes ingresados
 
 ````
 1. Receta: Omelette de Queso
@@ -463,9 +464,9 @@ Receta agregada correctamente a tu lista de favoritas!!!
 "N"
 Presione una tecla para continuar...
 ````
-#### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista, por lo tanto regresará al menú rin
+#### El programa añadió exitosamente la receta a la lista de favoritos. El usuario ya no desea seguir añadiendo recetas a su lista, por lo tanto regresará al menú principal
 
-### Paso 24: Seleccionar una nueva opción 
+### Paso 24: Seleccionar una nueva opción, recetas favoritas 
 
 ````
 ========================================
@@ -481,7 +482,7 @@ Presione una tecla para continuar...
 Ingrese su opción: 
 "4"
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza nuevamente el menú principal y selecciona una nueva opción
 
 ### Paso 25: Recetas favoritas
 
@@ -527,7 +528,7 @@ Receta eliminada correctamente de tu lista de favoritas!!!
 ````
 #### El usuario eliminó correctamente una recetas de su lista de favoritas. Por ahora el usuario no desea seguir eliminando, por lo tanto, regresará al menú principal.
 
-### Paso 27: Nueva opción
+### Paso 27: Corroboración historial
 
 ````
 ========================================
@@ -569,7 +570,7 @@ Lista de recetas favoritas:
 ````
 #### El usuario desea ver su lista actualizada para comprobar que estuviera todo en orden
 
-### Paso 29: Seleccionar una nueva opción 
+### Paso 29: Seleccionar una nueva opción, historial de búsqueda
 
 ````
 ========================================
@@ -587,7 +588,7 @@ Ingrese su opción:
 ````
 #### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
 
-### Paso 30: Historial
+### Paso 30: Elección dentro del submenú del Historial de búsqueda
 
 ````
 Menú historial
@@ -600,9 +601,9 @@ Menú historial
 Ingrese su opción:
 "1"
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza el submenú del historial y selecciona una de sus opciones posibles
 
-### Paso 31: Historial
+### Paso 31: Historial de búsqueda
 
 ````
 Bienvenido al historial!!!
@@ -625,9 +626,9 @@ Categoría: Desayuno
 
 Presione una tecla para continuar...
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza nuevamente el historial de búsqueda
 
-### Paso 32: Seleccionar una nueva opción 
+### Paso 32: Re-elección de Historial 
 
 ````
 ========================================
@@ -643,9 +644,9 @@ Presione una tecla para continuar...
 Ingrese su opción: 
 "5"
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza el menpu principal y selecciona su opción
 
-### Paso 33: Historial
+### Paso 33: elección submenpu del Historial
 
 ````
 Menú historial
@@ -658,11 +659,9 @@ Menú historial
 Ingrese su opción:
 "2"
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario seleccionó nuevamente la opción del historial, por lo tanto visualiza el submenú
 
-
-
-### Paso 34: Historial
+### Paso 34: Historial de recetas eliminadas de favoritos
 ````
 Bienvenido al historial de recetas eliminadas de favoritos!!!
 Aquí podras ver todas las recetas eliminadas
@@ -675,7 +674,7 @@ Aquí podras ver todas las recetas eliminadas
 
 Presione una tecla para continuar...
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza nuevamente las recetas eliminadas previamente de su lista de favoritas
 
 ### Paso 35: Seleccionar una nueva opción 
 
@@ -693,13 +692,27 @@ Presione una tecla para continuar...
 Ingrese su opción: 
 "6"
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario visualiza nuevamente el menú principal y selecciona su opción
 
-### Paso 36: Seleccionar una nueva opción 
+### Paso 36: Saliendo de la aplicación
 
 ````
 Saliendo del recetario...
 Presione una tecla para continuar...
 ````
-#### El usuario visualiza nuevamente el menú principal y selecciona la opción que desee
+#### El usuario desea salir del recetario, por lo tanto seleccionó la ultima opción
 
+
+Aportes integrantes:
+
+Alexander: 
+Implementación de la función “Búsqueda por ingredientes” junto con sus funciones complementarias, implementación de la función general “Omitir ingredientes” junto con sus funciones complementarias, aportó en la implementación y corrección de errores de la lista de favoritos, aportación en la implementación de la función “agregar al historial”,  aportación en las secciones del informe “TDAs” (Mapas), “Implementación”, “Planificación” y parte de “Funcionalidades del programa”.
+
+Eros: 
+Creación archivo READ.ME, implementación comentarios dentro del código, asistió en creación de funciones secundarias del programa como; “arreglar cadena”, “copiar lista”, etc. Es participe en la correción general de errores y búsqueda de soluciones.
+
+Constanza: 
+Creó el archivo csv el cual contiene todas las recetas usadas en la aplicación, implementó la funciones “capitalizar”, “Buscar por plato”,  “Rellenar tipo plato”, “Agregar receta favorita”, “Mostrar todas las recetas”,  “Actualizar listas favoritas”, “Agregar al historial”, “Buscar recetas posibles”, “Mostrar recetas favoritas”, “Mostrar historial búsquedas” y “Filtro recetas repetidas”.
+
+Lucas: 
+Creó la estructura de “recetasxdieta”, implementó funciones de depuración como; “Trim”, “arreglar cadena”, “espacio inicial”, “copiar lista”, “espacio inicial”, “mostrar lista”, contribuyó en la función “mostrar historial”, implementó la función “Buscar por dieta”, corrigió errores del main, ordenó las funciones del código.
