@@ -9,10 +9,7 @@
 #include "TDAs/map.h"
 #include <unistd.h>
 
-// PARA ELIMINAR GITs INGRESAR CÓDIGO EN Shell: " git reset --hard HEAD~1 "
-
 // **************************************** VARIABLES DINAMICAS (STRUCTs) **************************************** //
-
 // Estructura para almacenar la información de una receta
 typedef struct {
   char nombre_receta[30]; // Nombre de la receta
@@ -34,11 +31,9 @@ typedef struct {
     List *ingredientes; // Lista de ingredientes buscados (en caso que se busque por ingredientes)
     char categoria[20]; // categoría de la receta (tipo de plato o dieta)
 } datosHistorial;
-
 //********************************************************************************************************************* //
 
 // **************************************** FUNCIONES DE FUNCIONES PRINCIPALES **************************************** //
-
 // Función para recortar espacios en blanco al inicio y final de una cadena
 char *trim(char *cadena) {
     char *inicio, *fin; // Punteros cadena
@@ -262,7 +257,7 @@ void menu_secundario() {
 // Función para mostrar menú de pregunta si omitir ingredientes
 void menu_omitir_ingredientes(){
     printf("Desea omitir algun ingrediente en las recetas?\n");
-    printf("Ingrese su respuesta (S/N): \n");
+    printf("Ingrese su respuesta (S/N): ");
 }
 
 // Función para omitir ingredientes
@@ -370,7 +365,7 @@ void eliminar_receta(List *lista_favoritas, Stack *historial) {
     }
     
     if(bandera == 1) printf("Lo sentimos, no se encontró ninguna receta con ese nombre\n"); // Si no se encontró la receta
-    printf("\n¿Deseas eliminar otra receta de tu lista de favoritas? (S/N)\n"); getchar(); // Pregunta si desea eliminar otra receta
+    printf("\n¿Deseas eliminar otra receta de tu lista de favoritas? (S/N): "); getchar(); // Pregunta si desea eliminar otra receta
     scanf("%c", &opcion); getchar(); // Lee la opción del usuario
     if(opcion == 's' || opcion == 'S') eliminar_receta(lista_favoritas, historial); // Si desea eliminar otra receta, vuelve a llamar a la función
 }
@@ -393,7 +388,7 @@ void agregar_receta_favorita(List *lista_favoritas, Map *recetas_ordenadas){
         {
             list_pushFront(lista_favoritas, par->key); // Agrega la receta a la lista de favoritas
             printf("Receta agregada correctamente a tu lista de favoritas!!!\n\n");
-            printf("¿Deseas agregar otra receta a tu lista de favoritas? (S/N):\n"); getchar(); 
+            printf("¿Deseas agregar otra receta a tu lista de favoritas? (S/N): "); getchar(); 
             // Limpia el buffer y consulta si desea agregar otra receta
             scanf("%c", &opcion); // Lee la opción del usuario
             if(opcion == 's' || opcion == 'S') agregar_receta_favorita(lista_favoritas, recetas_ordenadas);
@@ -407,7 +402,7 @@ void agregar_receta_favorita(List *lista_favoritas, Map *recetas_ordenadas){
 // Función para actualizar la lista de recetas favoritas
 void actualizar_lista_favoritas(List *lista_favoritas, Map *recetas_ordenadas, int funcion){
     char opcion; // Variable para almacenar la opción del usuario
-    printf("\nDeseas agregar una de estas recetas a tu lista de favoritas? (S/N):\n");
+    printf("\nDeseas agregar una de estas recetas a tu lista de favoritas? (S/N): ");
     if(funcion == 1) getchar(); // Si es la primera función, se limpia el buffer de entrada
     scanf("%c", &opcion); // Lee la opción del usuario
     if(opcion == 's' || opcion == 'S') agregar_receta_favorita(lista_favoritas, recetas_ordenadas);
@@ -442,13 +437,9 @@ void printCatASCII() {
     printf("⠀⠀⠀⢀⠔⢡⢎⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠹⣿⣿⣿\n");
     printf("⠀⢠⠖⢁⣴⡿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢹⣿⣿\n\n");
 }
-
-
 //***************************************************************************************************************************** //
 
 // **************************************** FUNCIONES SECUNDARIAS DEL PROGRAMA **************************************** //
-
-
 // Función para buscar por plato
 void buscar_por_plato(Map *mapa_platos, Stack *historial, List *lista_favoritas, Map *recetas_ordenadas){
     
@@ -464,7 +455,7 @@ void buscar_por_plato(Map *mapa_platos, Stack *historial, List *lista_favoritas,
         omitir_ingredientes(omitidos); // Llama a la función para omitir ingredientes
     }
     
-    printf("Tipos de platos disponibles:\n"); // Imprimir los platos disponibles
+    printf("\nTipos de platos disponibles:\n"); // Imprimir los platos disponibles
     printf("\033[1;36m===========================\033[0m\n\n");
     MapPair *pair = map_first(mapa_platos); // Obtener el primer par del mapa de platos
     unsigned short contador = 1; // Contador para enumerar los platos
@@ -543,7 +534,7 @@ void buscarDieta(Map *tipo_dieta, Stack *historial, Map *recetas_ordenadas, List
     {
         omitir_ingredientes(omitidos); // Llamar a la función para omitir ingredientes
     }
-    printf("Dietas disponibles:\n");
+    printf("\nDietas disponibles:\n");
     printf("\033[1;36m===================\033[0m\n\n");
     MapPair *pair = map_first(tipo_dieta); // Obtener el primer par del mapa de dietas
     unsigned short contador = 1; // Contador para enumerar las dietas
@@ -655,6 +646,7 @@ void menu_ingredientes(){
     printf("\033[1;36m3.\033[0m Por tres ingredientes\n");
     printf("\033[1;36m4.\033[0m Por cuatro ingredientes\n");
     printf("\033[1;36m5.\033[0m Por cinco ingredientes\n");
+    printf("\033[1;36m6.\033[0m Salir\n");
 
 }
 
@@ -729,12 +721,10 @@ void mostrar_historial_eliminados(Stack *historial){
     }
     devolver_recetas_eliminadas(aux, historial); // Devolver las recetas eliminadas al historial original
 }
-
 //***************************************************************************************************************************** //
 
 
 // **************************************** FUNCIONES PRINCIPALES DEL PROGRAMA **************************************** //
-
 // Función para mostrar la animación de cargando
 void mostrarAnimacionCargando() {
     printCatASCII();
@@ -921,6 +911,7 @@ void buscar_por_ingredientes(Map *mapa_ingredientes, Stack *historial, List *lis
     menu_ingredientes();
     printf("\nIngrese una opción válida: \n");
     scanf("%d", &ingr);
+    if(ingr == 6) return;
     getchar(); // Limpiar el buffer
 
     printf("\n[RECUERDE: la primera letra en mayúscula y con los tildes correspondientes]\n");
@@ -1045,7 +1036,7 @@ void buscar_recetas_posibles(Map *recetas_ordenadas, Stack *historial, List *lis
     
     list_clean(omitidos); // Limpia la lista de ingredientes omitidos
     char recursiva; // Variable para almacenar la respuesta del usuario
-    printf("¿Deseas realizar otra búsqueda? (S/N): \n"); // Pregunta al usuario si desea realizar otra búsqueda
+    printf("¿Deseas realizar otra búsqueda? (S/N): "); // Pregunta al usuario si desea realizar otra búsqueda
     scanf("%c", &recursiva); // Lee la respuesta del usuario
     if (recursiva == 'S' || recursiva == 's')  // Si la respuesta es afirmativa
         buscar_recetas_posibles(recetas_ordenadas, historial,lista_favoritos); // Llama a la función recursivamente
@@ -1080,7 +1071,7 @@ void mostrar_recetas_favoritas(List *lista_favoritas, Stack *historial){
     }
 
     // Pregunta al usuario si desea eliminar una receta de la lista de favoritos
-    printf("¿Deseas eliminar alguna de tus recetas favoritas? (S/N)\n"); getchar(); // Limpia el buffer
+    printf("¿Deseas eliminar alguna de tus recetas favoritas? (S/N): "); getchar(); // Limpia el buffer
     char opcion; // Variable para almacenar la opción seleccionada por el usuario
     scanf("%c", &opcion); getchar(); // Lee la opción ingresada por el usuario y limpia el buffer
     if(opcion == 's' || opcion == 'S') // Si la opción es afirmativa
@@ -1110,12 +1101,10 @@ void Historial(Stack *historial_busquedas, Stack *historial_eliminados){
             puts("Opción no válida. Por favor, intente de nuevo.");
     }
 }
-
 //***************************************************************************************************************************** //
 
 
 // **************************************** FUNCIÓN MAIN **************************************** 
-
 int main() {
     mostrarAnimacionCargando();
     limpiarPantalla();
@@ -1171,5 +1160,4 @@ int main() {
     } while (opcion != '6');
     return 0;
 }
-
 //***************************************************************************************************************************** //
