@@ -4,7 +4,7 @@ Esta aplicación permite gestionar recetas de cocina, ofreciendo funcionalidades
 
 ## Cómo compilarlo
 
-1. Abre el enlace "" para redirigirte al programa en replit.
+1. Abre el enlace "https://replit.com/@Lucakuuuu/PROYECTO-3-RECETARIO?v=1" para redirigirte al programa en replit.
 2. Inicia sesión en caso de que no esté iniciada.
 3. En caso de que te aparezca, selecciona la opción "Fork & RUN", en caso de que no te aparezca pase al siguiente paso.
 4. Oprime el botón "Run" para compilar y ejecutar el programa.
