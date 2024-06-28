@@ -1,6 +1,6 @@
 compile = ["make", "-s"]
 run = "./main"
-entrypoint = "main.c"
+entrypoint = "README.md"
 hidden = ["main", "main-debug", "**/*.o", "**/*.d", ".ccls-cache", "Makefile"]
 
 [nix]
